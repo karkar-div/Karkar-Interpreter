@@ -1,0 +1,3 @@
+Guidlines:
+    * use UTF-16LE as an incoding
+    every type is size 1 aka 32bit

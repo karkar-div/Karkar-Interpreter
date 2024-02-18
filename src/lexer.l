@@ -1,0 +1,81 @@
+%option noyywrap
+
+%{
+#include <stdio.h>
+#include <string.h>
+#include <list>
+
+#define YY_DECL int yylex()
+
+#include "parser.tab.hpp"
+
+int Tab_Num = 0;
+
+%}
+
+%%
+
+\t           {Tab_Num++;}
+\n           {Tab_Num = 0;}
+
+";"          {return LINE_END;}
+":"          {return TWO_DOTS;}
+"("          {return ROUND_BRACKET_START;}
+")"          {return ROUND_BRACKET_END;}
+"["          {return SQWAR_BRACKET_START;}
+"]"          {return SQWAR_BRACKET_END;}
+","          {return COMA;}
+"."          {return DOT;}
+"->"         {return ARROW;}
+"=>"         {return THICK_ARROW;}
+
+"+"          {return PLUS;}
+"-"          {return SUB;}
+"\\"         {return DIV;}
+"*"          {return STAR;}
+"%"          {return MODULO;}
+
+"=="         {return IS_EQUAL;}
+"!="         {return ISNT_EQUAL;}
+"<"          {return IS_GREATER;}
+">"          {return IS_SMALLER;}
+
+"و"          {return LOGIC_AND;}
+"او"         {return LOGIC_OR;}
+"ليس"        {return LOGIC_NOT;}
+"and"        {return LOGIC_AND;}
+"or"         {return LOGIC_OR;}
+"not"        {return LOGIC_NOT;}
+
+"="          {return EQUAL;}
+
+"&"          {return AMPERSAND;}
+"|"          {return BIT_OR;}
+"^"          {return BIT_XOR;}
+"~"          {return BIT_NOT;}
+
+
+"function"   {return FUNCTION;} 
+"return"     {return RETURN;} 
+"if"         {return IF;}
+"while"      {return WHILE;}
+"else"       {return ELSE;}
+"var"        {return VAR;}
+"int"        {return INT;}
+"الوظيفة"    {return FUNCTION;} 
+"ارجع"       {return RETURN;} 
+"لو"         {return IF;}
+"طالما"      {return WHILE;}
+"غير"        {return ELSE;}
+"عرف"        {return VAR;}
+"الرقم"      {return INT;}
+
+[0-9]+                                    {yylval.Integer =  atoi(yytext);return NUM;}
+[ء-ي]+                                    {yylval.String = strdup(yytext);return IDENTIFIER;} 
+[ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ]+ {yylval.String = strdup(yytext);return IDENTIFIER;}
+[a-zA-Z]+                                 {yylval.String = strdup(yytext);return IDENTIFIER;}
+\"[^\"]*\"                                {yylval.String = strdup(yytext);return STRING;}
+
+.           ;
+
+%%

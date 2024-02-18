@@ -1,0 +1,11 @@
+{
+    "cmake.configureOnOpen": true,
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/mustafa/Karkar-Interpreter",
+            "binaryPath": "/home/mustafa/Karkar-Interpreter/interpreter",
+            "binaryArgs": []
+        }
+    ],
+    "makefile.buildBeforeLaunch": false,
+}
