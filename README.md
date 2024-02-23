@@ -14,7 +14,3 @@ an interpreter made for the Karkar programming language. a programming language 
         </p>
     </li>
 </ul>
-<<<<<<< HEAD
-=======
->
->>>>>>> 9971ca9 (completion)
