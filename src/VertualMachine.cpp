@@ -51,7 +51,7 @@ class VirtualMachine{
 			memset(Stack,0,sizeof(Stack));
 		}
 		void Run(std::vector<Instruction*>* instructions,bool debug = false){
-			for(;;Registers[RegisterType::IP]++){
+			while(true){
 				Instruction* instruction = (*instructions)[Registers[RegisterType::IP]];
 				if(debug){
 					printf("AX:%d ",Registers[RegisterType::AX]);
@@ -61,50 +61,41 @@ class VirtualMachine{
 				}
 				switch (instruction->Type){
 					/* memory control */
-					case drfrnc:{
+					case drfrnc:
 						Stack[Registers[RegisterType::SP]] = Stack[Stack[Registers[RegisterType::SP]]];
 						break;
-					}
 					/* control flow */
-					case Jmp:{
+					case Jmp:
 						Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
 						break;
-					}
-					case Nop:{
+					case Nop:
 						break;
-					}
-					case JN:{
-						if(Registers[RegisterType::CR] == false){
+					case JN:
+						if(Registers[RegisterType::CR] == false)
 							Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
-						}
 						break;
-					}
 					/* Stack minipulation (not that the Stack grows upowrd)*/
-					case Push:{
+					case Push:
 						Registers[RegisterType::SP]--;
 						Stack[Registers[RegisterType::SP]] = parameter_value(&(instruction->Parameters[FIRST]));
 						break;
-					}
-					case Pop:{
-						if(instruction->ParametersNum == 1){
+					case Pop:
+						if(instruction->ParametersNum == 1)
 							*(destenation(instruction)) = Stack[Registers[RegisterType::SP]];
-						}
 						Registers[RegisterType::SP]++;
 						break;
-					}
-					case Mov:{
-						if(instruction->ParametersNum == 2){
+					case Mov:
+						if(instruction->ParametersNum == 2)
 							*(destenation(instruction)) = parameter_value(&(instruction->Parameters[SECOND]));
-						}if(instruction->ParametersNum == 0){
+						if(instruction->ParametersNum == 0){
 							Stack[Stack[Registers[RegisterType::SP]+1]] = Stack[Registers[RegisterType::SP]];
 							Registers[RegisterType::SP]++;
 						}
 						break;
-					}
 					case Exit:
 						return;
 					/* binary operators */
-					default:{
+					default:
 						if(instruction->ParametersNum == 0){
 							Stack[Registers[RegisterType::SP]+1] = binary_operator(
 								instruction->Type,
@@ -120,8 +111,8 @@ class VirtualMachine{
 								parameter_value(&(instruction->Parameters[SECOND]))
 							);
 						break;
-					}
 				}
+				Registers[RegisterType::IP]++;
 			}
 			throw("Unsuccesfull Unknown exit");
 		}
