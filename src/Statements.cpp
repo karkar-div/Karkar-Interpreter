@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Expressions.cpp"
 #include <list>
 
@@ -11,9 +13,7 @@ class Statement{
 
 class EmptyStatement : public Statement{
 	public:
-		EmptyStatement(){
-			
-		}
+		EmptyStatement(){}
 		void debug(int tabs){
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Empty Statement\n");
@@ -21,7 +21,6 @@ class EmptyStatement : public Statement{
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			instructions->push_back(new Instruction(InstructionType::Nop));
 		}
-		// nothing to look at
 };
 
 class ReturnStatement : public Statement{
@@ -38,50 +37,50 @@ class ReturnStatement : public Statement{
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			ReturnedExpression->GenerateByteCode(instructions);
 			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::AX,0,false))); // the value is already in the top of the stack
-			/* collabsing the stack*/{
-				/* leave Instruction hand implemented */{
-					instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false))); // Restore the stack pointer to the orignal position
-					instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); // Restore the orignal Base Pointer, 
-				}
-
-				// do to the pop command subtracting the stack pointer. now it points to the return address
-
-				/* ret Instruction hand implemented */{
-					instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); // restore the return address to a general regester so to jump to
-					instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); // jump to the return address setuped by the caller
-					// jmp to R AKA Executions start from the regester regester is
-				}
-			}
+			/* leave Instruction hand implemented */
+			// the leave instruction meant to collapse the stack by moving bp to sp
+			// it also pop the stack top aka old bp into bp
+			instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false)));
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); 
+		
+			/* ret Instruction hand implemented */
+			// a ret instruction jump to the address stored at he top of the stack,
+			// this address is pushed by the caller 
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); 
+			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); 
+			
+		}
+		~ReturnStatement(){
+			delete ReturnedExpression;
 		}
 };
 
 class CompoundStatement : public Statement{
 	public:
 		std::list<Statement*>* Statements;
-		int Count;
 		CompoundStatement(std::list<Statement*>* list ){
 			Statements = list;
 		}
 		void debug(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Compound Statement\n");
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->debug(tabs+1);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				(*it)->debug(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			Symbol_Tables->Push(new std::list<Symbol*>);
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->GenerateByteCode(instructions);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				(*it)->GenerateByteCode(instructions);
 			Symbol_Tables->Pop();
+		}
+		~CompoundStatement(){
+			delete Statements;
 		}
 };
 
 class IfStatement : public CompoundStatement{
 	public:
+		/* 'Statements' came from the CompoundStatement class */
 		Expression* Condition;
 		IfStatement(std::list<Statement*>* list,Expression* condition):CompoundStatement(list){
 			Condition = condition;
@@ -90,10 +89,8 @@ class IfStatement : public CompoundStatement{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("If Statement\n");
 			Condition->debug(tabs+1);
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->debug(tabs+1);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				(*it)->debug(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 
@@ -109,10 +106,8 @@ class IfStatement : public CompoundStatement{
 
 			Symbol_Tables->Push(new std::list<Symbol*>);
 			// this statement will be skipped if false
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->GenerateByteCode(instructions);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				(*it)->GenerateByteCode(instructions);
 			Symbol_Tables->Pop();
 
 			// a Nop instruction works as a label
@@ -121,6 +116,10 @@ class IfStatement : public CompoundStatement{
 			jmp_instruction->Parameters[0].Offset = instructions->size() - 1;
 
 
+		}
+		~IfStatement(){
+			delete Condition;
+			delete Statements;
 		}
 };
 
@@ -134,10 +133,8 @@ class WhileStatement : public CompoundStatement{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("While Statement\n");
 			Condition->debug(tabs+1);
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->debug(tabs+1);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) 
+				(*it)->debug(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 
@@ -157,10 +154,8 @@ class WhileStatement : public CompoundStatement{
 
 			Symbol_Tables->Push(new std::list<Symbol*>);
 			// this statement will be skipped if false
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) {
-				auto g = *it;
-				g->GenerateByteCode(instructions);
-			}
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) 
+				(*it)->GenerateByteCode(instructions);
 			Symbol_Tables->Pop();
 
 			// jump to compair again ( note : this will happen only if true to compaire again)
@@ -170,6 +165,10 @@ class WhileStatement : public CompoundStatement{
 			instructions->push_back(new Instruction(InstructionType::Nop));
 			// updating the the jump address meant for skipping to the nop instruction aka the label
 			jmp_instruction->Parameters[0].Offset = instructions->size() - 1;
+		}
+		~WhileStatement(){
+			delete Condition;
+			delete Statements;
 		}
 };
 
@@ -192,6 +191,10 @@ class VarDefineStatement : public Statement{
 			printf("Identifier:%s\n",Identifier);
 			Type->debug(tabs+1);
 		}
+		~VarDefineStatement(){
+			delete Type;
+			free(Identifier);
+		}
 };
 
 class ExpressionBasedStatement : public Statement{
@@ -208,6 +211,9 @@ class ExpressionBasedStatement : public Statement{
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			TheExpression->GenerateByteCode(instructions);
 			instructions->push_back(new Instruction(InstructionType::Pop));
+		}
+		~ExpressionBasedStatement(){
+			delete TheExpression;
 		}
 };
 

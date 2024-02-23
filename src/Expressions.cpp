@@ -9,17 +9,12 @@
 class Expression{
 	protected:
 		void derefrence(std::list<Instruction*>* instructions,int derefrence_num){
-			for (int i = 0; i < derefrence_num; i++){
+			for (int i = 0; i < derefrence_num; i++)
 				instructions->push_back(new Instruction(InstructionType::drfrnc));
-			}
 		}
 	public:
-		virtual void debug(int tabs){
-			printf("Base Class wasn't override");
-		}
-		virtual void GenerateByteCode(std::list<Instruction*>* instructions,int derefrence_num = 0){
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false))); // the value is already in the top of the stack
-		}
+		virtual void debug(int tabs){}
+		virtual void GenerateByteCode(std::list<Instruction*>* instructions,int derefrence_num = 0){}
 };
 
 class BinaryExpression : public Expression{
@@ -73,7 +68,7 @@ class BinaryExpression : public Expression{
 			switch(Operation){
 				case Moving:
 					FirstExpression->GenerateByteCode(instructions,derefrence_num-1);
-					FirstExpression->GenerateByteCode(instructions);
+					SecondExpression->GenerateByteCode(instructions);
 					instructions->push_back(new Instruction(InstructionType::Mov));
 					break;
 				case MemberAccess:
@@ -88,10 +83,13 @@ class BinaryExpression : public Expression{
 					break;
 			}
 		}
+		~BinaryExpression(){
+			delete FirstExpression;
+			delete SecondExpression;
+		}
 };
 
 class UnaryExpression : public Expression{
-	
 	public:
 		enum Type{
 			BitwizeNot ,
@@ -145,10 +143,10 @@ class UnaryExpression : public Expression{
 					break;
 			}
 		}
+		~UnaryExpression(){
+			delete FirstExpression;
+		}
 };
-
-// TODO
-
 
 // TODO
 class ArrayAccessExpression : public Expression{
@@ -165,11 +163,15 @@ class ArrayAccessExpression : public Expression{
 			Array->debug(tabs+1);
 			Index->debug(tabs+1);
 		}
+		~ArrayAccessExpression(){
+			delete Array;
+			delete Index;
+		}
 };
 
 class NumberExpression : public Expression{
 	public:
-	int Value;
+		int Value;
 		NumberExpression(int value){
 			Value = value;
 		}
@@ -194,7 +196,9 @@ class StringExpression : public Expression{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("String Expression:%s\n",Value);
 		}
-	
+		~StringExpression(){
+			free(Value);
+		}
 };
 
 // TODO
@@ -215,6 +219,9 @@ class IdentifierExpression : public Expression{
 			// TODO add referencing
 			derefrence(instructions,derefrence_num+1);
 		}
+		~IdentifierExpression(){
+			free(Name);
+		}
 };
 
 class FunctionCallExpression : public Expression{
@@ -227,11 +234,61 @@ class FunctionCallExpression : public Expression{
 		}
 		void debug (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
-			printf("FunctionCall Expression\n");
+			printf("Function Call Expression\n");
 			Function->debug(tabs+1);
+			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it)
+				(*it)->debug(tabs+1);
+		}
+		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
+			Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false));
+			instructions->push_back(jmp_int); 
+
+			instructions->push_back(new Instruction(InstructionType::Push)); 
+
+			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+				(*it)->GenerateByteCode(instructions);
+			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+				instructions->push_back(new Instruction(InstructionType::Pop));
+			
+			instructions->push_back(new Instruction(InstructionType::Pop));
+
+			instructions->push_back(
+				new Instruction(
+					InstructionType::Jmp,
+					Parameter(
+						RegisterType::Null,
+						Symbol_Tables->FindDefinition(
+							((IdentifierExpression*)Function)->Name
+						),
+						false
+			)));
+
+			instructions->push_back(new Instruction(InstructionType::Nop)); 
+			jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
+
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+		}
+		~FunctionCallExpression(){
+			delete Parameters;
+			delete Function;
+		}
+};
+
+class ExternalFunctionCallExpression : public Expression {
+	public:
+		char* FunctionName;
+		std::list<Expression*>* Parameters;
+		ExternalFunctionCallExpression(char* function,std::list<Expression*>* parameters){
+			FunctionName = function;
+			Parameters = parameters;
+		}
+		void debug (int tabs) override {
+			for(int x = 0;x < tabs;x++)printf("    ");
+			printf("Extrenal Function Call Expression\n");
+			for(int x = 0;x < tabs;x++)printf("    ");
+			printf("%s",FunctionName);
 			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) {
-				auto g = *it;
-				g->debug(tabs+1);
+				(*it)->debug(tabs+1);
 			}
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
@@ -252,8 +309,8 @@ class FunctionCallExpression : public Expression{
 					InstructionType::Jmp,
 					Parameter(
 						RegisterType::Null,
-						Symbol_Tables->FindGlobaly(
-							((IdentifierExpression*)Function)->Name
+						Symbol_Tables->FindDefinition(
+							((IdentifierExpression*)FunctionName)->Name
 						),
 						false
 			)));
@@ -262,5 +319,9 @@ class FunctionCallExpression : public Expression{
 			jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
 
 			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+		}
+		~ExternalFunctionCallExpression(){
+			delete Parameters;
+			free(FunctionName);
 		}
 };

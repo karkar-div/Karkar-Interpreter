@@ -31,6 +31,8 @@ enum InstructionType{
 	Pop,  // 0 , 1
 	/* lea */
 	drfrnc, // 0
+	/* other */
+	Exit,
 };
 
 enum RegisterType{
@@ -125,6 +127,7 @@ struct Instruction{
 			case Nop   :printf("Nop   ");break;
 			case JN    :printf("JN    ");break;
 			case drfrnc:printf("drfrnc");break;
+			case Exit  :printf("exit  ");break;
 			default    :printf("OMG   ");break;
 		}
 		printf(" ");

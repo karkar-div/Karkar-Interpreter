@@ -19,10 +19,8 @@ class Function{
 		void debug(int tabs){
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Function:%s ",Name);
-			for (std::list<Symbol*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) {
-				auto g = *it;
+			for (std::list<Symbol*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
 				(*it)->debug();
-			}
 			printf("\n");
 			MainStatement->debug(tabs+1);
 		}
@@ -33,7 +31,7 @@ class Function{
 			// add labal 
 			Symbol_Tables->Push(Parameters);
 			instructions->push_back(new Instruction(InstructionType::Nop)); 
-			Symbol_Tables->ConstGlobalSymbols->push_back(new ConstGlobalSymbol(new Symbol(Name,new IntType),instructions->size()-1)) ;
+			Symbol_Tables->Definitions->push_back(new Definition(Name,instructions->size()-1)) ;
 
 			/* set up the stack*/
 			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::BP,0,false))); // Pushing the old Base Pointer so we dont lose it
@@ -48,19 +46,33 @@ class Function{
 			Symbol_Tables->Pop();
 			// updating the max size for the stack       
 			StackAllocter->Parameters[SECOND].Offset = Symbol_Tables->MaxSize;
-
-			/* leave Instruction hand implemented */
-			instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false))); // Restore the stack pointer to the orignal position
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); // Restore the orignal Base Pointer, 
-		
-
-			// do to the pop command subtracting the stack pointer. now it points to the return address
-
-			/* ret Instruction hand implemented */
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); // restore the return address to a general regester so to jump to
-			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); // jump to the return address setuped by the caller
-			// jmp to R AKA Executions start from the regester regester is
-
+			
+			/*
+			 * if main wasn't found (and exit wasn't needed),
+			 * the code will jump to a full stack collapse
+			 */
+			try{
+				Symbol_Tables->FindDefinition("main");
+				instructions->push_back(new Instruction(InstructionType::Exit)); // Restore the stack pointer to the orignal position
+			}catch(...){
+				/* leave Instruction hand implemented */
+				// the leave instruction meant to collapse the stack by moving bp to sp
+				// it also pop the stack top aka old bp into bp
+				instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false)));
+				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); 
+			
+				/* ret Instruction hand implemented */
+				// a ret instruction jump to the address stored at he top of the stack,
+				// this address is pushed by the caller 
+				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); 
+				instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); 
+			}
 			Symbol_Tables->ResetSize();
+		}
+		~Function(){
+			delete Parameters;
+			delete MainStatement;
+			delete ReturnType;
+			free(Name);
 		}
 };

@@ -1,9 +1,10 @@
 build: 
 	bison -d src/parser.y -o parser.tab.cpp
 	flex src/lexer.l
-	g++ lex.yy.c parser.tab.cpp -o interpreter -lm -g
+	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm
+
 run:
-	./interpreter test.txt
+	@ bin/./interpreter test.txt
 
 clean:
 	rm  lex.yy.c 

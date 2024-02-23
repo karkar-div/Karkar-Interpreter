@@ -10,13 +10,14 @@
 #include "parser.tab.hpp"
 
 int Tab_Num = 0;
+int Line_Index = 1;
 
 %}
 
 %%
 
 \t           {Tab_Num++;}
-\n           {Tab_Num = 0;}
+\n           {Tab_Num = 0; Line_Index++;}
 
 ";"          {return LINE_END;}
 ":"          {return TWO_DOTS;}
@@ -37,8 +38,8 @@ int Tab_Num = 0;
 
 "=="         {return IS_EQUAL;}
 "!="         {return ISNT_EQUAL;}
-"<"          {return IS_GREATER;}
-">"          {return IS_SMALLER;}
+">"          {return IS_GREATER;}
+"<"          {return IS_SMALLER;}
 
 "و"          {return LOGIC_AND;}
 "او"         {return LOGIC_OR;}
@@ -62,6 +63,9 @@ int Tab_Num = 0;
 "else"       {return ELSE;}
 "var"        {return VAR;}
 "int"        {return INT;}
+"import"     {return IMPORT;} 
+"from"       {return FROM;}
+"as"         {return AS;} 
 "الوظيفة"    {return FUNCTION;} 
 "ارجع"       {return RETURN;} 
 "لو"         {return IF;}
@@ -69,13 +73,18 @@ int Tab_Num = 0;
 "غير"        {return ELSE;}
 "عرف"        {return VAR;}
 "الرقم"      {return INT;}
+"استورد"     {return IMPORT;} 
+"من"         {return FROM;}
+"ك"          {return AS;} 
 
-[0-9]+                                    {yylval.Integer =  atoi(yytext);return NUM;}
-[ء-ي]+                                    {yylval.String = strdup(yytext);return IDENTIFIER;} 
-[ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ]+ {yylval.String = strdup(yytext);return IDENTIFIER;}
-[a-zA-Z]+                                 {yylval.String = strdup(yytext);return IDENTIFIER;}
-\"[^\"]*\"                                {yylval.String = strdup(yytext);return STRING;}
+"الرئيسية"                                {yylval.String  = strdup("main");return IDENTIFIER;}
+[0-9]+                                    {yylval.Integer = atoi(yytext);  return NUM;}
+[ء-ي]+                                    {yylval.String  = strdup(yytext);return IDENTIFIER;} 
+[ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ]+ {yylval.String  = strdup(yytext);return IDENTIFIER;}
+[a-zA-Z_]+                                {yylval.String  = strdup(yytext);return IDENTIFIER;}
+\"[^\"]*\"                                {yylval.String  = strdup(yytext);return STRING;}
 
-.           ;
+
+.           {}
 
 %%

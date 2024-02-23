@@ -46,13 +46,13 @@ class Symbol {
 		}
 };
 
-class ConstGlobalSymbol{
+class Definition{
 	public:
-		Symbol* TheSymbol;
+		char* Identifier;
 		int AssignedValue;
-		ConstGlobalSymbol(Symbol* _symbol,int value){
+		Definition(char* identifier,int value){
 			AssignedValue = value;
-			TheSymbol = _symbol;
+			Identifier = identifier;
 		}
 };
 
@@ -61,12 +61,12 @@ class SymbolTableStack{
 		int Top;
 		int MaxSize;
 		std::vector<std::list<Symbol*>*> Tables;
-		std::list<ConstGlobalSymbol*>* ConstGlobalSymbols;
+		std::list<Definition*>* Definitions;
 		SymbolTableStack(){
 			Top = -1;
 			MaxSize = 0;
 			Tables = std::vector<std::list<Symbol*>*>(COPACTY);
-			ConstGlobalSymbols = new std::list<ConstGlobalSymbol*>;
+			Definitions = new std::list<Definition*>;
 		}
 		void Push(std::list<Symbol*>* table){
 			Top++;
@@ -77,40 +77,24 @@ class SymbolTableStack{
 			delete Tables[Top];
 			Top--;
 		}
-		int Find(char* indentifier){
-			bool is_found = false;
-			int address = 0;
-			for (int i = 0; i < Top+1; i++) {
+		int Find(const char* indentifier){
+			int address = 1;
+			for (int i = 0; i < Top+1; i++) 
 				for (std::list<Symbol*>::iterator it = Tables[i]->begin(); it != Tables[i]->end(); ++it){
-					if(!strcmp((*it)->Name,indentifier)){
-						is_found = true;
-						goto end_search;
-					}else
-						address += (*it)->Type->Size;
+					if(!strcmp((*it)->Name,indentifier)) return address;
+					else address += (*it)->Type->Size;
 				}
-			}        
-			end_search:
-			if(is_found){
-				address++;
-				return address;
-			} else {
-				printf("undefine");
-				return -100000;
-			}
+			throw ("Unknown Identifier \"%s\"",indentifier);
 		}
 		void ResetSize(){
 			MaxSize = 0;
 		}
-		int FindGlobaly(const char* indentifier){
-			int address = 0;
-			for (std::list<ConstGlobalSymbol*>::iterator it = ConstGlobalSymbols->begin(); it != ConstGlobalSymbols->end(); ++it){
-				if(!strcmp((*it)->TheSymbol->Name,indentifier)){
-					goto end_search;
-				}
-				address += (*it)->TheSymbol->Type->Size;
+		int FindDefinition(const char* indentifier){
+			for (std::list<Definition*>::iterator it = Definitions->begin(); it != Definitions->end(); ++it){
+				if(!strcmp((*it)->Identifier,indentifier))
+					return (*it)->AssignedValue;
 			}
-			end_search:
-			return address;
+			throw ("Unknown Identifier \"%s\"",indentifier);
 		}
 	private:
 		int CerentSize(){
@@ -118,8 +102,6 @@ class SymbolTableStack{
 			for (int i = 0; i < Top+1; i++) 
 				for (std::list<Symbol*>::iterator it = Tables[i]->begin(); it != Tables[i]->end(); ++it) 
 					size += (*it)->Type->Size;
-				
-			
 			return size;
 		}
 };
