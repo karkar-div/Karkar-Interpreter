@@ -26,7 +26,6 @@ function main () :
 
 ### Statements
 there is three types,
-<<<<<<< HEAD
 #### conntrol flow 
 like return statements `return expr;` or while statements `while expr:` or if statements `if expr:`
 #### logic/math operation
@@ -44,7 +43,6 @@ Examples `;`
 you need to use the `var` keyword followe by a time, there is only `int` for this time, followed by an indetifier. <br/> Example: `var int x`, you can also decare it with a value like
  `var int x = 0`
 
->>>>>>> ad1afba (Update README.md)
 
 ## next goals:
 1. adding vectors
@@ -52,4 +50,5 @@ you need to use the `var` keyword followe by a time, there is only `int` for thi
 3. adding bytecode formats
 4. optimization
 5. stabalty
+
 this project now is not a serios one, i will be glad for feadback
