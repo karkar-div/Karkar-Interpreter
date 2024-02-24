@@ -26,12 +26,25 @@ function main () :
 
 ### Statements
 there is three types,
+<<<<<<< HEAD
 #### conntrol flow 
 like return statements `return expr;` or while statements `while expr:` or if statements `if expr:`
 #### logic/math operation
 like expression based statements `expr;`, the operation you can do are `=`,`+`,`-`,`/`,`*`,`%` for math; bitwize ones like `|`for OR,`&` for AND,and`^`for XOR; and logical ones using keyword like `or`and`and`
 #### empty ones
 Examples `;`
+=======
+#### 1. conntrol flow 
+like return statements `return expr;` or while statements `while expr:` or if statements `if expr:`
+#### 2. logic/math operation
+like expression based statements `expr;`, the operation you can do are `=`,`+`,`-`,`/`,`*`,`%` for math; bitwize ones like `|`for OR,`&` for AND,and`^`for XOR; and logical ones using keyword like `or`and`and`
+#### 3. empty ones
+Examples `;`
+#### variable declation
+you need to use the `var` keyword followe by a time, there is only `int` for this time, followed by an indetifier. <br/> Example: `var int x`, you can also decare it with a value like
+ `var int x = 0`
+
+>>>>>>> ad1afba (Update README.md)
 
 ## next goals:
 1. adding vectors
