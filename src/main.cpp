@@ -122,6 +122,7 @@ int main(int argc,char* argv[]) {
 	lib = new Library();
 	Scopes = new ScopeStack();
 	Symbol_Tables = new SymbolTableStack();
+	Global_Dependencies = new std::list<Dependency*>;
 
 	/* Tokenize the code */
     try{
@@ -160,6 +161,10 @@ int main(int argc,char* argv[]) {
 			new std::vector<Instruction*>(
 				lib->Instructions->begin(),
 				lib->Instructions->end()
+			),
+			new std::vector<Dependency*>(
+				Global_Dependencies->begin(),
+				Global_Dependencies->end()
 			),
 			debug && verbose
 		);

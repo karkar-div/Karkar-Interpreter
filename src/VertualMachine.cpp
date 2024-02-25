@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "Instructions.cpp"
-
+#include "Dependencies.cpp"
 
 class VirtualMachine{
 	private:
@@ -50,7 +50,7 @@ class VirtualMachine{
 			Stack = new int64_t[stack_size];
 			memset(Stack,0,sizeof(Stack));
 		}
-		void Run(std::vector<Instruction*>* instructions,bool debug = false){
+		void Run(std::vector<Instruction*>* instructions,std::vector<Dependency*>* Dependencies,bool debug = false){
 			while(true){
 				Instruction* instruction = (*instructions)[Registers[RegisterType::IP]];
 				if(debug){
@@ -67,12 +67,15 @@ class VirtualMachine{
 					/* control flow */
 					case Jmp:
 						Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
+						Registers[RegisterType::IP]--;
 						break;
 					case Nop:
 						break;
 					case JN:
-						if(Registers[RegisterType::CR] == false)
+						if(Registers[RegisterType::CR] == false){
 							Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
+							Registers[RegisterType::IP]--;
+						}
 						break;
 					/* Stack minipulation (not that the Stack grows upowrd)*/
 					case Push:
@@ -94,6 +97,16 @@ class VirtualMachine{
 						break;
 					case Exit:
 						return;
+					case so_call:{
+						// TODO ??????
+						std::list<int64_t>* args = new std::list<int64_t>;
+						for(int x = 0; x < parameter_value(&(instruction->Parameters[SECOND])) ;x++){
+							args->push_back(Stack[Registers[RegisterType::SP]]);
+							Registers[RegisterType::SP]++;
+						}
+						(*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						break;
+					}
 					/* binary operators */
 					default:
 						if(instruction->ParametersNum == 0){

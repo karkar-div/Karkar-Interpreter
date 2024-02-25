@@ -48,13 +48,12 @@ class Function{
 			StackAllocter->Parameters[SECOND].Offset = Symbol_Tables->MaxSize;
 			
 			/*
-			 * if main wasn't found (and exit wasn't needed),
-			 * the code will jump to a full stack collapse
+			 * if main was found, a special exit code is added
+			 * strcmp return 0 os success and 1 on faliure
 			 */
-			try{
-				Symbol_Tables->FindDefinition("main");
+			if(strcmp("main",Name) == 0)
 				instructions->push_back(new Instruction(InstructionType::Exit)); // Restore the stack pointer to the orignal position
-			}catch(...){
+			else{
 				/* leave Instruction hand implemented */
 				// the leave instruction meant to collapse the stack by moving bp to sp
 				// it also pop the stack top aka old bp into bp

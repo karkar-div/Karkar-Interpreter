@@ -98,7 +98,11 @@ File: FunctionsOpional {
 ;
 
 FunctionsOpional: Function FunctionsOpional                                     { $2->push_front($1); $$ = $2; }
-|		 		  IMPORT STRING FROM STRING AS STRING LINE_END FunctionsOpional { $$ = $8;}
+|		 		  IMPORT STRING FROM STRING AS STRING LINE_END FunctionsOpional {
+	Global_Dependencies->push_back(new Dependency($2,$4));
+	Symbol_Tables->DependencySymbols->push_back(new DependencySymbol(Global_Dependencies->size()-1,$6));
+	$$ = $8;
+}
 |		          %empty                                                        { $$ = new std::list<Function*> ; }
 ;
 

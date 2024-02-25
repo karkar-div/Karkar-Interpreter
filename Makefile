@@ -4,7 +4,7 @@ build:
 	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm
 
 run:
-	@ bin/./interpreter test.txt
+	@ bin/./interpreter test.kk
 
 clean:
 	rm  lex.yy.c 

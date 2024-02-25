@@ -56,17 +56,29 @@ class Definition{
 		}
 };
 
+class DependencySymbol{
+	public:
+		int FunctionIndex;
+		char* Identifier;
+		DependencySymbol(int index,char* indetifier){
+			FunctionIndex = index;
+			Identifier = indetifier;
+		}
+};
+
 class SymbolTableStack{
 	public:
 		int Top;
 		int MaxSize;
 		std::vector<std::list<Symbol*>*> Tables;
 		std::list<Definition*>* Definitions;
+		std::list<DependencySymbol*>* DependencySymbols;
 		SymbolTableStack(){
 			Top = -1;
 			MaxSize = 0;
 			Tables = std::vector<std::list<Symbol*>*>(COPACTY);
 			Definitions = new std::list<Definition*>;
+			DependencySymbols = new std::list<DependencySymbol*>();
 		}
 		void Push(std::list<Symbol*>* table){
 			Top++;
@@ -84,7 +96,7 @@ class SymbolTableStack{
 					if(!strcmp((*it)->Name,indentifier)) return address;
 					else address += (*it)->Type->Size;
 				}
-			throw ("Unknown Identifier \"%s\"",indentifier);
+			return -1;
 		}
 		void ResetSize(){
 			MaxSize = 0;
@@ -94,7 +106,13 @@ class SymbolTableStack{
 				if(!strcmp((*it)->Identifier,indentifier))
 					return (*it)->AssignedValue;
 			}
-			throw ("Unknown Identifier \"%s\"",indentifier);
+			return -1;
+		}
+		int FindExternedFunction(const char* indentifier){
+			for (std::list<DependencySymbol*>::iterator it = DependencySymbols->begin(); it != DependencySymbols->end(); ++it){
+				if(!strcmp((*it)->Identifier,indentifier))
+					return (*it)->FunctionIndex;
+			}
 		}
 	private:
 		int CerentSize(){

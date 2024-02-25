@@ -32,6 +32,7 @@ enum InstructionType{
 	/* lea */
 	drfrnc, // 0
 	/* other */
+	so_call, // 2 first: function index, second: agrument number
 	Exit,
 };
 

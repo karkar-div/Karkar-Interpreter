@@ -240,88 +240,40 @@ class FunctionCallExpression : public Expression{
 				(*it)->debug(tabs+1);
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
-			Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false));
-			instructions->push_back(jmp_int); 
+			if(Symbol_Tables->FindDefinition(((IdentifierExpression*)Function)->Name) != -1){
+				Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false));
+				instructions->push_back(jmp_int); 
 
-			instructions->push_back(new Instruction(InstructionType::Push)); 
+				instructions->push_back(new Instruction(InstructionType::Push)); 
 
-			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
-				(*it)->GenerateByteCode(instructions);
-			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+				for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+					(*it)->GenerateByteCode(instructions);
+				for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+					instructions->push_back(new Instruction(InstructionType::Pop));
+				
 				instructions->push_back(new Instruction(InstructionType::Pop));
-			
-			instructions->push_back(new Instruction(InstructionType::Pop));
 
-			instructions->push_back(
-				new Instruction(
-					InstructionType::Jmp,
-					Parameter(
-						RegisterType::Null,
-						Symbol_Tables->FindDefinition(
-							((IdentifierExpression*)Function)->Name
-						),
-						false
-			)));
+				instructions->push_back(
+					new Instruction(
+						InstructionType::Jmp,
+						Parameter(
+							RegisterType::Null,
+							Symbol_Tables->FindDefinition(
+								((IdentifierExpression*)Function)->Name
+							),
+							false
+				)));
 
-			instructions->push_back(new Instruction(InstructionType::Nop)); 
-			jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
+				instructions->push_back(new Instruction(InstructionType::Nop)); 
+				jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
 
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+			}else if(Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name ) != -1){
+				
+			}
 		}
 		~FunctionCallExpression(){
 			delete Parameters;
 			delete Function;
-		}
-};
-
-class ExternalFunctionCallExpression : public Expression {
-	public:
-		char* FunctionName;
-		std::list<Expression*>* Parameters;
-		ExternalFunctionCallExpression(char* function,std::list<Expression*>* parameters){
-			FunctionName = function;
-			Parameters = parameters;
-		}
-		void debug (int tabs) override {
-			for(int x = 0;x < tabs;x++)printf("    ");
-			printf("Extrenal Function Call Expression\n");
-			for(int x = 0;x < tabs;x++)printf("    ");
-			printf("%s",FunctionName);
-			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) {
-				(*it)->debug(tabs+1);
-			}
-		}
-		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
-			Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false));
-			instructions->push_back(jmp_int); 
-
-			instructions->push_back(new Instruction(InstructionType::Push)); 
-
-			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
-				(*it)->GenerateByteCode(instructions);
-			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
-				instructions->push_back(new Instruction(InstructionType::Pop));
-			
-			instructions->push_back(new Instruction(InstructionType::Pop));
-
-			instructions->push_back(
-				new Instruction(
-					InstructionType::Jmp,
-					Parameter(
-						RegisterType::Null,
-						Symbol_Tables->FindDefinition(
-							((IdentifierExpression*)FunctionName)->Name
-						),
-						false
-			)));
-
-			instructions->push_back(new Instruction(InstructionType::Nop)); 
-			jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
-
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
-		}
-		~ExternalFunctionCallExpression(){
-			delete Parameters;
-			free(FunctionName);
 		}
 };
