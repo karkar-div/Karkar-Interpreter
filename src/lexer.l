@@ -80,16 +80,16 @@ int Line_Index = 1;
 "الرئيسية"                                {yylval.String  = strdup("main");return IDENTIFIER;}
 [0-9]+                                    {yylval.Integer = atoi(yytext);  return NUM;}
 [ء-ي]+                                    {yylval.String  = strdup(yytext);return IDENTIFIER;} 
-[ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ]+ {yylval.String  = strdup(yytext);return IDENTIFIER;}
+[ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ_]+ {yylval.String  = strdup(yytext);return IDENTIFIER;}
 [a-zA-Z_]+                                {yylval.String  = strdup(yytext);return IDENTIFIER;}
-\"[^\"]*\"                                {
+\"[^\"]*\"  {
     char* str = strdup(yytext);
     str++;
     str[strlen(str) - 1] = '\0';
     yylval.String = str;
     return STRING;
 }
-\'.\'                               {
+\'.\' {
     char* str = strdup(yytext);
     yylval.Integer = str[1];
     return NUM;
