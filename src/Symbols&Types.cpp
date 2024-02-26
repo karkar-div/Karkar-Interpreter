@@ -22,7 +22,7 @@ class VarType{
 class IntType : public VarType{
 	public:
 		IntType():VarType(){
-			Size = 1;
+			Size = 8;
 		}
 		void debug(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
@@ -90,7 +90,7 @@ class SymbolTableStack{
 			Top--;
 		}
 		int Find(const char* indentifier){
-			int address = 1;
+			int address = 8;
 			for (int i = 0; i < Top+1; i++) 
 				for (std::list<Symbol*>::iterator it = Tables[i]->begin(); it != Tables[i]->end(); ++it){
 					if(!strcmp((*it)->Name,indentifier)) return address;
