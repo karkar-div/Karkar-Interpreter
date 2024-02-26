@@ -89,6 +89,11 @@ int Line_Index = 1;
     yylval.String = str;
     return STRING;
 }
+\'.\'                               {
+    char* str = strdup(yytext);
+    yylval.Integer = str[1];
+    return NUM;
+}
 
 
 .           {}

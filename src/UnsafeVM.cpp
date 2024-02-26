@@ -138,12 +138,12 @@ class VirtualMachine{
 					case Exit:{
 						return;                        
                     }
-					/*case so_call:{
+					case so_call:{
 						// TODO ??????
 						std::list<int64_t>* args = new std::list<int64_t>;
 						for(int x = 0; x < parameter_value(&(instruction->Parameters[SECOND])) ;x++){
-							args->push_back(Stack[Registers[RegisterType::SP]]);
-							Registers[RegisterType::SP]++;
+							args->push_back(*StackPointer);
+						    StackPointer++;
 						}
 						(*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
 						break;
