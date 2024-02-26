@@ -82,7 +82,13 @@ int Line_Index = 1;
 [ء-ي]+                                    {yylval.String  = strdup(yytext);return IDENTIFIER;} 
 [ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ]+ {yylval.String  = strdup(yytext);return IDENTIFIER;}
 [a-zA-Z_]+                                {yylval.String  = strdup(yytext);return IDENTIFIER;}
-\"[^\"]*\"                                {yylval.String  = strdup(yytext);return STRING;}
+\"[^\"]*\"                                {
+    char* str = strdup(yytext);
+    str++;
+    str[strlen(str) - 1] = '\0';
+    yylval.String = str;
+    return STRING;
+}
 
 
 .           {}

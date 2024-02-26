@@ -170,10 +170,10 @@ int main(int argc,char* argv[]) {
 		);
 	}
 	catch(const char* error_massage){
-
+		printf("Unexpected Run-time Error :%s",error_massage);
+		return -1;
 	}
-	if(debug)
-		printf("Program finished execution successfully.\n");
+	if(debug)printf("Program finished execution successfully.\n");
 
 
 	delete lib;

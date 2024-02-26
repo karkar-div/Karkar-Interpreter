@@ -1159,24 +1159,30 @@ case 58:
 /* rule 58 can match eol */
 YY_RULE_SETUP
 #line 85 "src/lexer.l"
-{yylval.String  = strdup(yytext);return STRING;}
+{
+    char* str = strdup(yytext);
+    str++;
+    str[strlen(str) - 1] = '\0';
+    yylval.String = str;
+    return STRING;
+}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 88 "src/lexer.l"
+#line 94 "src/lexer.l"
 {}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 89 "src/lexer.l"
+#line 95 "src/lexer.l"
 {}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 91 "src/lexer.l"
+#line 97 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 1180 "lex.yy.c"
+#line 1186 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2181,6 +2187,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 91 "src/lexer.l"
+#line 97 "src/lexer.l"
 
 

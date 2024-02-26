@@ -1321,7 +1321,7 @@ yyreduce:
   case 4: /* FunctionsOpional: IMPORT STRING FROM STRING AS STRING LINE_END FunctionsOpional  */
 #line 101 "src/parser.y"
                                                                                                 {
-	Global_Dependencies->push_back(new Dependency((yyvsp[-6].String),(yyvsp[-4].String)));
+	Global_Dependencies->push_back(new Dependency((yyvsp[-4].String),(yyvsp[-6].String)));
 	Symbol_Tables->DependencySymbols->push_back(new DependencySymbol(Global_Dependencies->size()-1,(yyvsp[-2].String)));
 	(yyval.Func_Pointer_list) = (yyvsp[0].Func_Pointer_list);
 }

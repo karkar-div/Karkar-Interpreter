@@ -269,7 +269,23 @@ class FunctionCallExpression : public Expression{
 
 				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
 			}else if(Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name ) != -1){
-				
+				for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+					(*it)->GenerateByteCode(instructions);
+				instructions->push_back(
+					new Instruction(
+						InstructionType::so_call,
+						Parameter(
+							RegisterType::Null,
+							Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name ),
+							false
+						),
+						Parameter(
+							RegisterType::Null,
+							Parameters->size(),
+							false
+						)
+					)
+				);
 			}
 		}
 		~FunctionCallExpression(){
