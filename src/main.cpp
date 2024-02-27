@@ -63,7 +63,7 @@ int main(int argc,char* argv[]) {
 	}
 
 
-
+	
 	// Open the input file for reading
 	FILE *inputFile = fopen(inputFileName, "rb");
 	if (inputFile == NULL) {
@@ -114,6 +114,7 @@ int main(int argc,char* argv[]) {
 		iconv_close(cd);
 		return 1;
 	}
+	iconv_close(cd);
 
 	// Print the converted content to the console
 	if(debug)printf("File Content:\n%s\n", outputBuffer);
@@ -154,6 +155,10 @@ int main(int argc,char* argv[]) {
     delete Scopes;
     delete Symbol_Tables;
 
+
+	free(inputBuffer);
+	free(outputBuffer);
+
 	/* Running the code */
 	try{
 		VirtualMachine* VM = new VirtualMachine(Symbol_Tables->FindDefinition("main"));
@@ -168,6 +173,7 @@ int main(int argc,char* argv[]) {
 			),
 			debug && verbose
 		);
+		delete VM;
 	}
 	catch(const char* error_massage){
 		printf("Unexpected Run-time Error :%s",error_massage);
@@ -178,10 +184,6 @@ int main(int argc,char* argv[]) {
 
 	delete lib;
 
-	iconv_close(cd);
-
-	free(inputBuffer);
-	free(outputBuffer);
 
 	return 0;
 }

@@ -130,21 +130,19 @@ class VirtualMachine{
 							temp.value = *(StackPointer+1);
 							*temp.address = *StackPointer;
 							StackPointer++;
-							//Stack[Stack[Registers[RegisterType::SP]+1]] = Stack[Registers[RegisterType::SP]];
-							//StackPointer++;
 						}
 						break;
 					case Exit:{
 						return;                        
 					}
 					case so_call:{
-						// TODO ??????
 						std::list<int64_t>* args = new std::list<int64_t>;
 						for(int x = 0; x < parameter_value(&(instruction->Parameters[SECOND])) ;x++){
-							args->push_back(*StackPointer);
+							args->push_front(*StackPointer);
 							StackPointer++;
 						}
-						(*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						delete args;
 						break;
 					}
 					/* binary operators */
@@ -168,5 +166,9 @@ class VirtualMachine{
 				Registers[RegisterType::IP]++;
 			}
 			throw("Unsuccesfull Unknown exit");
+		}
+		~VirtualMachine(){
+			delete Stack;
+			delete Registers;
 		}
 };

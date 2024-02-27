@@ -286,6 +286,8 @@ class FunctionCallExpression : public Expression{
 						)
 					)
 				);
+				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+				
 			}
 		}
 		~FunctionCallExpression(){
