@@ -109,14 +109,9 @@ class SymbolTableStack{
 			return -1;
 		}
 		int FindExternedFunction(const char* indentifier){
-			for (std::list<DependencySymbol*>::iterator it = DependencySymbols->begin(); it != DependencySymbols->end(); ++it){
-				if(!strcmp((*it)->Identifier,indentifier)){
+			for (std::list<DependencySymbol*>::iterator it = DependencySymbols->begin(); it != DependencySymbols->end(); ++it)
+				if(!strcmp((*it)->Identifier,indentifier))
 					return (*it)->FunctionIndex;
-								
-				}
-				printf("Failer %s:\n",(*it)->Identifier);	
-			}
-
 			return -1;
 		}
 	private:
