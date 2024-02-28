@@ -113,7 +113,8 @@ class VirtualMachine{
 					/* Stack minipulation (not that the Stack grows upowrd)*/
 					case Push:{
 						StackPointer--;
-						*StackPointer = parameter_value(&(instruction->Parameters[FIRST]));
+						if(instruction->ParametersNum == 1)
+							*StackPointer = parameter_value(&(instruction->Parameters[FIRST]));
 						break;                        
 					}
 					case Pop:{
