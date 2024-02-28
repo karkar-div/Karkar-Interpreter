@@ -1,7 +1,7 @@
 build: 
 	bison -d src/parser.y -o parser.tab.cpp
 	flex src/lexer.l
-	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm
+	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm -g
 
 release: 
 	bison -d src/parser.y -o parser.tab.cpp

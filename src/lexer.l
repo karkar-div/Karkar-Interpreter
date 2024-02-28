@@ -32,7 +32,7 @@ int Line_Index = 1;
 
 "+"          {return PLUS;}
 "-"          {return SUB;}
-"\\"         {return DIV;}
+"/"          {return DIV;}
 "*"          {return STAR;}
 "%"          {return MODULO;}
 
