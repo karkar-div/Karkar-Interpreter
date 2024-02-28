@@ -69,33 +69,34 @@ extern int yydebug;
     WHILE = 270,                   /* WHILE  */
     VAR = 271,                     /* VAR  */
     ELSE = 272,                    /* ELSE  */
-    INT = 273,                     /* INT  */
-    IMPORT = 274,                  /* IMPORT  */
-    FROM = 275,                    /* FROM  */
-    AS = 276,                      /* AS  */
-    NUM = 277,                     /* NUM  */
-    IDENTIFIER = 278,              /* IDENTIFIER  */
-    STRING = 279,                  /* STRING  */
-    PLUS = 280,                    /* PLUS  */
-    SUB = 281,                     /* SUB  */
-    DIV = 282,                     /* DIV  */
-    STAR = 283,                    /* STAR  */
-    MODULO = 284,                  /* MODULO  */
-    IS_EQUAL = 285,                /* IS_EQUAL  */
-    ISNT_EQUAL = 286,              /* ISNT_EQUAL  */
-    IS_GREATER = 287,              /* IS_GREATER  */
-    IS_SMALLER = 288,              /* IS_SMALLER  */
-    LOGIC_AND = 289,               /* LOGIC_AND  */
-    LOGIC_OR = 290,                /* LOGIC_OR  */
-    LOGIC_NOT = 291,               /* LOGIC_NOT  */
-    EQUAL = 292,                   /* EQUAL  */
-    BIT_OR = 293,                  /* BIT_OR  */
-    BIT_XOR = 294,                 /* BIT_XOR  */
-    BIT_NOT = 295,                 /* BIT_NOT  */
-    POINTER_STUFF = 296,           /* POINTER_STUFF  */
-    PL = 297,                      /* PL  */
-    DOT = 298,                     /* DOT  */
-    ARROW = 299                    /* ARROW  */
+    IMPORT = 273,                  /* IMPORT  */
+    FROM = 274,                    /* FROM  */
+    AS = 275,                      /* AS  */
+    INT = 276,                     /* INT  */
+    CHAR = 277,                    /* CHAR  */
+    NUM = 278,                     /* NUM  */
+    IDENTIFIER = 279,              /* IDENTIFIER  */
+    STRING = 280,                  /* STRING  */
+    PLUS = 281,                    /* PLUS  */
+    SUB = 282,                     /* SUB  */
+    DIV = 283,                     /* DIV  */
+    STAR = 284,                    /* STAR  */
+    MODULO = 285,                  /* MODULO  */
+    IS_EQUAL = 286,                /* IS_EQUAL  */
+    ISNT_EQUAL = 287,              /* ISNT_EQUAL  */
+    IS_GREATER = 288,              /* IS_GREATER  */
+    IS_SMALLER = 289,              /* IS_SMALLER  */
+    LOGIC_AND = 290,               /* LOGIC_AND  */
+    LOGIC_OR = 291,                /* LOGIC_OR  */
+    LOGIC_NOT = 292,               /* LOGIC_NOT  */
+    EQUAL = 293,                   /* EQUAL  */
+    BIT_OR = 294,                  /* BIT_OR  */
+    BIT_XOR = 295,                 /* BIT_XOR  */
+    BIT_NOT = 296,                 /* BIT_NOT  */
+    POINTER_STUFF = 297,           /* POINTER_STUFF  */
+    PL = 298,                      /* PL  */
+    DOT = 299,                     /* DOT  */
+    ARROW = 300                    /* ARROW  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -104,7 +105,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 64 "src/parser.y"
+#line 65 "src/parser.y"
 
 	int   Integer;
 	char* String;
@@ -120,7 +121,7 @@ union YYSTYPE
 	class std::list<Expression*>* Expr_Pointer_List;
 	class std::list<Symbol*>*     Smbl_Pointer_List;
 
-#line 124 "parser.tab.hpp"
+#line 125 "parser.tab.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -142,7 +142,6 @@ class VirtualMachine{
 							StackPointer++;
 						}
 						Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
-						delete args;
 						break;
 					}
 					/* binary operators */

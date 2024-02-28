@@ -30,6 +30,17 @@ class IntType : public VarType{
 		}
 };
 
+class CharType : public VarType{
+	public:
+		CharType():VarType(){
+			Size = 1;
+		}
+		void debug(int tabs) override {
+			for(int x = 0;x < tabs;x++)printf("    ");
+			printf("Size:%d\n",Size);
+		}
+};
+
 class Symbol {
 	public:
 		char* Name; // Name of the variable

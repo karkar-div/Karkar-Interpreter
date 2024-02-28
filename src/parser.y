@@ -16,10 +16,11 @@
 %token WHILE
 %token VAR
 %token ELSE
-%token INT
 %token IMPORT 
 %token FROM 
 %token AS 
+%token INT 
+%token CHAR
 
 %token NUM
 %token IDENTIFIER
@@ -134,6 +135,7 @@ ReturnTypeOptional: THICK_ARROW Type { $$ = $2 ; }
 ;
 
 Type: INT                                                              { $$ = new IntType(); }
+|	  CHAR 															   { $$ = new CharType(); }
 |     IDENTIFIER                                                       { $$ = new VarType(); }
 |     Type SQWAR_BRACKET_START Expression SQWAR_BRACKET_END            { $$ = new VarType(); }
 |     Type IS_SMALLER Type IS_GREATER /* angle brackets */             { $$ = new VarType(); }

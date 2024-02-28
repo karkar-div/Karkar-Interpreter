@@ -62,20 +62,22 @@ int Line_Index = 1;
 "while"      {return WHILE;}
 "else"       {return ELSE;}
 "var"        {return VAR;}
-"int"        {return INT;}
 "import"     {return IMPORT;} 
 "from"       {return FROM;}
 "as"         {return AS;} 
+"int"        {return INT;}
+"char"       {return CHAR;}
 "الوظيفة"    {return FUNCTION;} 
 "ارجع"       {return RETURN;} 
 "لو"         {return IF;}
 "طالما"      {return WHILE;}
 "غير"        {return ELSE;}
 "عرف"        {return VAR;}
-"الرقم"      {return INT;}
 "استورد"     {return IMPORT;} 
 "من"         {return FROM;}
 "ك"          {return AS;} 
+"الرقم"      {return INT;}
+"حرف"        {return CHAR;}
 
 "الرئيسية"                                {yylval.String  = strdup("main");return IDENTIFIER;}
 [0-9]+                                    {yylval.Integer = atoi(yytext);  return NUM;}

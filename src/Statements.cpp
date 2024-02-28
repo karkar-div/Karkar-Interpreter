@@ -172,7 +172,6 @@ class WhileStatement : public CompoundStatement{
 		}
 };
 
-// TODO
 class VarDefineStatement : public Statement{
 	public:
 		VarType* Type;
