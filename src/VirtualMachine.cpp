@@ -30,7 +30,7 @@ class VirtualMachine{
 					return Registers[param->Register];
 			}
 		}
-		int64_t* destenation(Parameter param){
+		int64_t* destination(Parameter param){
 			switch(param.Register){
 				case SP:
 					return &((int64_t&)StackPointer);
@@ -119,13 +119,13 @@ class VirtualMachine{
 					}
 					case Pop:{
 						if(instruction->ParametersNum == 1)
-							*(destenation(instruction->Parameters[FIRST])) = *StackPointer;
+							*(destination(instruction->Parameters[FIRST])) = *StackPointer;
 						StackPointer++;
 						break;                        
 					}
 					case Mov:
 						if(instruction->ParametersNum == 2)
-							*(destenation(instruction->Parameters[FIRST])) = parameter_value(&(instruction->Parameters[SECOND]));
+							*(destination(instruction->Parameters[FIRST])) = parameter_value(&(instruction->Parameters[SECOND]));
 						if(instruction->ParametersNum == 0){
 							address_as_int temp;
 							temp.value = *(StackPointer+1);
@@ -156,7 +156,7 @@ class VirtualMachine{
 							StackPointer++;
 						}
 						if(instruction->ParametersNum == 2)
-							*(destenation(instruction->Parameters[FIRST])) = binary_operator(
+							*(destination(instruction->Parameters[FIRST])) = binary_operator(
 								instruction->Type,
 								parameter_value(&(instruction->Parameters[FIRST])),
 								parameter_value(&(instruction->Parameters[SECOND]))
@@ -165,7 +165,7 @@ class VirtualMachine{
 				}
 				Registers[RegisterType::IP]++;
 			}
-			throw("Unsuccesfull Unknown exit");
+			throw("Unsuccessful Unknown exit");
 		}
 		~VirtualMachine(){
 			delete Stack;
