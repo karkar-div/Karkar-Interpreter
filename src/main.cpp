@@ -7,7 +7,7 @@
 
 #include "Libraries.cpp"
 #include "ScopeStack.cpp"
-#include "VertualMachine.cpp"
+#include "VirtualMachine.cpp"
 
 extern int yylex();
 extern int yyparse();
