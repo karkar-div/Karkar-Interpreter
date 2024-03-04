@@ -74,6 +74,8 @@ class CompoundStatement : public Statement{
 			Symbol_Tables->Pop();
 		}
 		~CompoundStatement(){
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				delete (*it);
 			delete Statements;
 		}
 };
@@ -118,8 +120,10 @@ class IfStatement : public CompoundStatement{
 
 		}
 		~IfStatement(){
-			delete Condition;
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				delete (*it);
 			delete Statements;
+			delete Condition;
 		}
 };
 
@@ -167,8 +171,10 @@ class WhileStatement : public CompoundStatement{
 			jmp_instruction->Parameters[0].Offset = instructions->size() - 1;
 		}
 		~WhileStatement(){
-			delete Condition;
+			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
+				delete (*it);
 			delete Statements;
+			delete Condition;
 		}
 };
 

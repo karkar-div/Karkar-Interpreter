@@ -59,7 +59,7 @@ class VirtualMachine{
 	public:
 		VirtualMachine(int64_t entrypoint,int64_t stack_size = 0x100000,int64_t registers_num = 20){
 			Stack = new int64_t[stack_size];
-			memset(Stack,0,sizeof(Stack));
+			memset(Stack,0,sizeof(int64_t)*stack_size);
 			_stack_size = stack_size;
 			Registers = new int64_t[registers_num];
 			memset(Registers,0,sizeof(int64_t)*registers_num);
@@ -67,9 +67,9 @@ class VirtualMachine{
 			BasePointer = &Stack[stack_size-1];
 			Registers[RegisterType::IP] = entrypoint;
 		}
-		void Run(std::vector<Instruction*>* instructions,std::vector<Dependency*>* Dependencies,bool debug = false){
+		void Run(std::vector<Instruction*>& instructions,std::vector<Dependency*>& Dependencies,bool debug = false){
 			while(true){
-				Instruction* instruction = (*instructions)[Registers[RegisterType::IP]];
+				Instruction* instruction = instructions[Registers[RegisterType::IP]];
 				if(debug){
 					printf("[");
 					for(int x = 0;x < 10;x++){
@@ -142,7 +142,8 @@ class VirtualMachine{
 							args->push_front(*StackPointer);
 							StackPointer++;
 						}
-						Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						Registers[RegisterType::AX] = Dependencies[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						delete args;
 						break;
 					}
 					/* binary operators */

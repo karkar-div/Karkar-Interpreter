@@ -46,8 +46,8 @@ class Symbol {
 		char* Name; // Name of the variable
 		VarType* Type; 
 		int DefaultDereferencing;
-		Symbol(char* name,VarType* type){
-			Name = name;
+		Symbol(const char* name,VarType* type){
+			Name = strdup(name);
 			Type = type;
 			DefaultDereferencing = 1;
 		}
@@ -55,15 +55,21 @@ class Symbol {
 		void debug(){
 			printf("Symbol:\"%s\".",Name);
 		}
+		~Symbol(){
+			free(Name);
+		}
 };
 
 class Definition{
 	public:
 		char* Identifier;
 		int AssignedValue;
-		Definition(char* identifier,int value){
+		Definition(const char* identifier,int value){
 			AssignedValue = value;
-			Identifier = identifier;
+			Identifier = strdup(identifier);
+		}
+		~Definition(){
+			free(Identifier);
 		}
 };
 
@@ -71,9 +77,12 @@ class DependencySymbol{
 	public:
 		int FunctionIndex;
 		char* Identifier;
-		DependencySymbol(int index,char* indetifier){
+		DependencySymbol(int index,const char* indetifier){
 			FunctionIndex = index;
-			Identifier = indetifier;
+			Identifier = strdup(indetifier);
+		}
+		~DependencySymbol(){
+			free(Identifier);
 		}
 };
 
@@ -97,6 +106,8 @@ class SymbolTableStack{
 		}
 		void Pop(void){
 			MaxSize = Max(MaxSize,CerentSize());
+			for (std::list<Symbol*>::iterator it = Tables[Top]->begin(); it != Tables[Top]->end(); ++it) 
+				delete (*it);
 			delete Tables[Top];
 			Top--;
 		}
@@ -124,6 +135,16 @@ class SymbolTableStack{
 				if(!strcmp((*it)->Identifier,indentifier))
 					return (*it)->FunctionIndex;
 			return -1;
+		}
+		~SymbolTableStack(){
+			// Definitions
+			for (std::list<Definition*>::iterator it = Definitions->begin(); it != Definitions->end(); ++it)
+				delete (*it);			
+			delete Definitions;
+			// DependencySymbols
+			for (std::list<DependencySymbol*>::iterator it = DependencySymbols->begin(); it != DependencySymbols->end(); ++it)
+				delete (*it);
+			delete DependencySymbols;
 		}
 	private:
 		int CerentSize(){

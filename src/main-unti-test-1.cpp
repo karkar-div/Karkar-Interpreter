@@ -135,58 +135,8 @@ int main(int argc,char* argv[]) {
 	Symbol_Tables = new SymbolTableStack();
 	Global_Dependencies = new std::list<Dependency*>;
 
-    try{
-	    yy_scan_string(outputBuffer+3);
-    }catch (const char * error_massage){
-        printf("Unknown Token ! :%s",error_massage);
-		return -1;
-    }
-
-    try{
-        yyparse();
-        if(debug)lib->debug(0);
-    }catch(const char * error_massage){
-        printf("Unknown grammer or Syntax near line %d as : %s \n",Line_Index,error_massage);
-        return -1;
-    }
+	lib->Functions = new std::list<Function*>;
 	free(outputBuffer);
-
-    try{
-        lib->GenerateByteCode();
-        if(debug)lib->debug_bytecode();
-    } catch (const char * error_massage) {
-        printf("Unexpected Byte Code Generator Error near line %d as : %s \n",Line_Index,error_massage);
-        return -1;
-    }
-
-
-
-
-
-	/* Running the code */
-	try{
-		std::unique_ptr<VirtualMachine> VM(new VirtualMachine(Symbol_Tables->FindDefinition("main")));
-		std::unique_ptr<std::vector<Instruction*>> temp_instructions_vector (
-			new std::vector<Instruction*>(
-				lib->Instructions->begin(),
-				lib->Instructions->end()
-		));
-		std::unique_ptr<std::vector<Dependency*>> temp_dependencies_vector(
-			new std::vector<Dependency*>(
-				Global_Dependencies->begin(),
-				Global_Dependencies->end()
-		));
-		VM->Run(
-			*temp_instructions_vector,
-			*temp_dependencies_vector,
-			debug && verbose
-		);
-	}
-	catch(const char* error_massage){
-		printf("Unexpected Run-time Error :%s",error_massage);
-		return -1;
-	}
-	if(debug)printf("Program finished execution successfully.\n");
 
 	delete lib;
 	delete Scopes;
@@ -194,6 +144,13 @@ int main(int argc,char* argv[]) {
 	for(std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end();++it)
 		delete (*it);
 	delete Global_Dependencies;
+
+
+
+	/* Running the code */
+	if(debug)printf("Program finished execution successfully.\n");
+
+
 
 
 

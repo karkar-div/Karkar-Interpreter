@@ -33,7 +33,7 @@ enum InstructionType{
 	drfrnc, // 0
 	/* other */
 	so_call, // 2 first: function index, second: agrument number
-	Exit,
+	Exit,    // special exit code
 };
 
 enum RegisterType{
@@ -135,9 +135,8 @@ struct Instruction{
 		printf(" ");
 		for(int i = 0 ; i < ParametersNum;i++){
 			Parameters[i].debug();
-			if(i < ParametersNum-1){
+			if(i < ParametersNum-1)
 				printf(",");
-			}
 		}
 		printf("\n");
 	}
