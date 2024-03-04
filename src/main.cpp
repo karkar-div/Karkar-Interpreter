@@ -187,14 +187,17 @@ int main(int argc,char* argv[]) {
 		return -1;
 	}
 	if(debug)printf("Program finished execution successfully.\n");
-
+	/*
+	printf("good so far\n");
 	delete lib;
+	printf("good so far\n");
 	delete Scopes;
+	printf("good so far\n");
 	delete Symbol_Tables;
-	for(std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end();++it)
-		delete (*it);
+	printf("good so far\n");
 	delete Global_Dependencies;
-
+	printf("finished\n");
+	*/
 
 
 	return 0;
