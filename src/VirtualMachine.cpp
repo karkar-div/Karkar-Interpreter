@@ -67,9 +67,9 @@ class VirtualMachine{
 			BasePointer = &Stack[stack_size-1];
 			Registers[RegisterType::IP] = entrypoint;
 		}
-		void Run(std::vector<Instruction*>& instructions,std::vector<Dependency*>& Dependencies,bool debug = false){
+		void Run(const std::vector<Instruction*>* instructions,const std::vector<Dependency*>* Dependencies,bool debug = false){
 			while(true){
-				Instruction* instruction = instructions[Registers[RegisterType::IP]];
+				Instruction* instruction = (*instructions)[Registers[RegisterType::IP]];
 				if(debug){
 					printf("[");
 					for(int x = 0;x < 10;x++){
@@ -78,12 +78,12 @@ class VirtualMachine{
 							printf("SP:");
 						if(BasePointer == &Stack[_stack_size - x])
 							printf("BP:");
-						printf("%d ",Stack[_stack_size - x]);
+						printf("%zd ",Stack[_stack_size - x]);
 					}
 					printf("]\n");
-					printf("AX:%d ",Registers[RegisterType::AX]);
-					printf("IP:%d ",Registers[RegisterType::IP]);
-					printf("SP:%d ",StackPointer);
+					printf("AX:%zd ",Registers[RegisterType::AX]);
+					printf("IP:%zd ",Registers[RegisterType::IP]);
+					printf("SP:%zd ",StackPointer);
 					instruction->debug();
 				}
 				switch (instruction->Type){
@@ -142,7 +142,7 @@ class VirtualMachine{
 							args->push_front(*StackPointer);
 							StackPointer++;
 						}
-						Registers[RegisterType::AX] = Dependencies[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
+						Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
 						delete args;
 						break;
 					}

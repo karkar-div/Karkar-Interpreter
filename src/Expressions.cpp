@@ -14,6 +14,7 @@ class Expression{
 	public:
 		virtual void debug(int tabs){}
 		virtual void GenerateByteCode(std::list<Instruction*>* instructions,int derefrence_num = 0){}
+		virtual ~Expression(){}
 };
 
 class BinaryExpression : public Expression{

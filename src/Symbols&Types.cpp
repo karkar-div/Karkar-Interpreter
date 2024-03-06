@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <memory>
 
 
 #define COPACTY 100
@@ -17,6 +18,11 @@ class VarType{
 	public:
 		int Size;
 		virtual void debug(int tabs){}
+		virtual VarType* Clone() const {
+			VarType* temp = (VarType*)malloc(sizeof(VarType));
+			memcpy(temp,this,sizeof(VarType));
+			return temp;
+		}
 };
 
 class IntType : public VarType{
@@ -27,6 +33,9 @@ class IntType : public VarType{
 		void debug(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Size:%d\n",Size);
+		}
+		VarType* Clone() const {
+			return new IntType();
 		}
 };
 
@@ -46,9 +55,9 @@ class Symbol {
 		char* Name; // Name of the variable
 		VarType* Type; 
 		int DefaultDereferencing;
-		Symbol(const char* name,VarType* type){
+		Symbol(const char* name,const VarType* type){
 			Name = strdup(name);
-			Type = type;
+			Type = type->Clone();
 			DefaultDereferencing = 1;
 		}
 		Symbol(){}
@@ -56,6 +65,7 @@ class Symbol {
 			printf("Symbol:\"%s\".",Name);
 		}
 		~Symbol(){
+			delete Type;
 			free(Name);
 		}
 };

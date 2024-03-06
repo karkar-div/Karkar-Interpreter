@@ -10,7 +10,7 @@
 class Dependency{
     private:
         void safe_strcopy(char* desk,const char* source,int buffersize){
-            if((strlen(desk)+1)<= buffersize)
+            if((strlen(desk)+1)<=(size_t)buffersize)
                 strcpy(desk,source);
             else
                 throw ("the name is too long");

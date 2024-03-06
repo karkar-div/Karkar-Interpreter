@@ -1496,7 +1496,7 @@ yyreduce:
 	Scopes->Push(
 		new ExpressionBasedStatement(
 			new BinaryExpression(
-				new IdentifierExpression((yyvsp[-2].String)),
+				new IdentifierExpression(strdup((yyvsp[-2].String))),
 				(yyvsp[0].Expr_Pointer),
 				BinaryExpression::Type::Moving)
 			),

@@ -55,7 +55,7 @@ char* read_and_convert_file(const char* inputFileName){
 
 	// Read the content of the input file into the buffer
 	size_t bytesRead = fread(inputBuffer, 1, fileSize, inputFile);
-	if (bytesRead != fileSize) {
+	if (bytesRead != (size_t)fileSize) {
 		perror("Error reading file");
 		free(inputBuffer);
 		fclose(inputFile);
@@ -159,45 +159,39 @@ int main(int argc,char* argv[]) {
         return -1;
     }
 
-
-
-
-
 	/* Running the code */
 	try{
-		std::unique_ptr<VirtualMachine> VM(new VirtualMachine(Symbol_Tables->FindDefinition("main")));
-		std::unique_ptr<std::vector<Instruction*>> temp_instructions_vector (
-			new std::vector<Instruction*>(
-				lib->Instructions->begin(),
-				lib->Instructions->end()
-		));
-		std::unique_ptr<std::vector<Dependency*>> temp_dependencies_vector(
-			new std::vector<Dependency*>(
-				Global_Dependencies->begin(),
-				Global_Dependencies->end()
-		));
+		VirtualMachine* VM = new VirtualMachine(Symbol_Tables->FindDefinition("main"));
+		std::vector<Instruction*>* temp_instructions_vector = new std::vector<Instruction*>(
+			lib->Instructions->begin(),
+			lib->Instructions->end()
+		);
+		std::vector<Dependency*>* temp_dependencies_vector = new std::vector<Dependency*>(
+			Global_Dependencies->begin(),
+			Global_Dependencies->end()
+		);
 		VM->Run(
-			*temp_instructions_vector,
-			*temp_dependencies_vector,
+			temp_instructions_vector,
+			temp_dependencies_vector,
 			debug && verbose
 		);
+		delete VM;
+		delete temp_dependencies_vector;
+		delete temp_instructions_vector;
 	}
 	catch(const char* error_massage){
 		printf("Unexpected Run-time Error :%s",error_massage);
 		return -1;
 	}
 	if(debug)printf("Program finished execution successfully.\n");
-	/*
-	printf("good so far\n");
+	
 	delete lib;
-	printf("good so far\n");
 	delete Scopes;
-	printf("good so far\n");
 	delete Symbol_Tables;
-	printf("good so far\n");
+	for(std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end();++it)
+		delete (*it);
 	delete Global_Dependencies;
-	printf("finished\n");
-	*/
+	
 
 
 	return 0;

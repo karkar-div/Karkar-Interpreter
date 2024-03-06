@@ -135,8 +135,30 @@ int main(int argc,char* argv[]) {
 	Symbol_Tables = new SymbolTableStack();
 	Global_Dependencies = new std::list<Dependency*>;
 
-	lib->Functions = new std::list<Function*>;
+    try{
+	    yy_scan_string(outputBuffer+3);
+    }catch (const char * error_massage){
+        printf("Unknown Token ! :%s",error_massage);
+		return -1;
+    }
+
+    try{
+        yyparse();
+        if(debug)lib->debug(0);
+    }catch(const char * error_massage){
+        printf("Unknown grammer or Syntax near line %d as : %s \n",Line_Index,error_massage);
+        return -1;
+    }
+
 	free(outputBuffer);
+
+	try{
+        lib->GenerateByteCode();
+        if(debug)lib->debug_bytecode();
+    } catch (const char * error_massage) {
+        printf("Unexpected Byte Code Generator Error near line %d as : %s \n",Line_Index,error_massage);
+        return -1;
+    }
 
 	delete lib;
 	delete Scopes;

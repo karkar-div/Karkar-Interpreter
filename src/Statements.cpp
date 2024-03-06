@@ -9,6 +9,7 @@ class Statement{
 	public:
 		virtual void debug(int tabs){}
 		virtual void GenerateByteCode(std::list<Instruction*>* instructions){}
+		virtual ~Statement() {}
 };
 
 class EmptyStatement : public Statement{
@@ -21,6 +22,7 @@ class EmptyStatement : public Statement{
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			instructions->push_back(new Instruction(InstructionType::Nop));
 		}
+		~EmptyStatement() override {}
 };
 
 class ReturnStatement : public Statement{
@@ -50,7 +52,7 @@ class ReturnStatement : public Statement{
 			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); 
 			
 		}
-		~ReturnStatement(){
+		~ReturnStatement() override {
 			delete ReturnedExpression;
 		}
 };
@@ -73,7 +75,7 @@ class CompoundStatement : public Statement{
 				(*it)->GenerateByteCode(instructions);
 			Symbol_Tables->Pop();
 		}
-		~CompoundStatement(){
+		~CompoundStatement() override {
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
 				delete (*it);
 			delete Statements;
@@ -119,10 +121,8 @@ class IfStatement : public CompoundStatement{
 
 
 		}
-		~IfStatement(){
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
-				delete (*it);
-			delete Statements;
+		~IfStatement() override {
+			// resources for Statements is already freed at ~CompoundStatement()
 			delete Condition;
 		}
 };
@@ -170,10 +170,8 @@ class WhileStatement : public CompoundStatement{
 			// updating the the jump address meant for skipping to the nop instruction aka the label
 			jmp_instruction->Parameters[0].Offset = instructions->size() - 1;
 		}
-		~WhileStatement(){
-			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
-				delete (*it);
-			delete Statements;
+		~WhileStatement()  {
+			// resources for Statements is already freed at ~CompoundStatement()
 			delete Condition;
 		}
 };
@@ -191,12 +189,12 @@ class VarDefineStatement : public Statement{
 		}
 		void debug(int tabs) override{
 			for(int x = 0;x < tabs;x++)printf("    ");
-			printf("Var Define Statement:\n",Identifier);
+			printf("Var Define Statement:\n");
 			for(int x = 0;x < tabs+1;x++)printf("    ");
 			printf("Identifier:%s\n",Identifier);
 			Type->debug(tabs+1);
 		}
-		~VarDefineStatement(){
+		~VarDefineStatement() override {
 			delete Type;
 			free(Identifier);
 		}
@@ -217,7 +215,7 @@ class ExpressionBasedStatement : public Statement{
 			TheExpression->GenerateByteCode(instructions);
 			instructions->push_back(new Instruction(InstructionType::Pop));
 		}
-		~ExpressionBasedStatement(){
+		~ExpressionBasedStatement() override {
 			delete TheExpression;
 		}
 };

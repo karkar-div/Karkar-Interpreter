@@ -170,7 +170,7 @@ Declearations : Type IDENTIFIER                  { Scopes->Push(new VarDefineSta
 	Scopes->Push(
 		new ExpressionBasedStatement(
 			new BinaryExpression(
-				new IdentifierExpression($2),
+				new IdentifierExpression(strdup($2)),
 				$4,
 				BinaryExpression::Type::Moving)
 			),
