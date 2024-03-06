@@ -102,6 +102,9 @@ FunctionsOpional: Function FunctionsOpional                                     
 |		 		  IMPORT STRING FROM STRING AS STRING LINE_END FunctionsOpional {
 	Global_Dependencies->push_back(new Dependency($4,$2));
 	Symbol_Tables->DependencySymbols->push_back(new DependencySymbol(Global_Dependencies->size()-1,$6));
+	free($4-1);
+	free($2-1);
+	free($6-1);
 	$$ = $8;
 }
 |		          %empty                                                        { $$ = new std::list<Function*> ; }
@@ -127,7 +130,7 @@ Parameters: Parameters COMA Parameter { $1->push_back($3); $$ = $1; }
 |			Parameter { $$ = new std::list<Symbol*>; $$->push_back($1); }
 ;
 
-Parameter: Type IDENTIFIER { $$ = new Symbol($2,$1);}
+Parameter: Type IDENTIFIER { $$ = new Symbol($2,$1);free($1);delete $2;}
 ;
 
 ReturnTypeOptional: THICK_ARROW Type { $$ = $2 ; }

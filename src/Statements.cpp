@@ -70,7 +70,7 @@ class CompoundStatement : public Statement{
 				(*it)->debug(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
-			Symbol_Tables->Push(new std::list<Symbol*>);
+			Symbol_Tables->PushNewTable();
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
 				(*it)->GenerateByteCode(instructions);
 			Symbol_Tables->Pop();
@@ -108,7 +108,7 @@ class IfStatement : public CompoundStatement{
 			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0,false));
 			instructions->push_back(jmp_instruction);
 
-			Symbol_Tables->Push(new std::list<Symbol*>);
+			Symbol_Tables->PushNewTable();
 			// this statement will be skipped if false
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
 				(*it)->GenerateByteCode(instructions);
@@ -156,7 +156,7 @@ class WhileStatement : public CompoundStatement{
 			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0,false));
 			instructions->push_back(jmp_instruction);
 
-			Symbol_Tables->Push(new std::list<Symbol*>);
+			Symbol_Tables->PushNewTable();
 			// this statement will be skipped if false
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) 
 				(*it)->GenerateByteCode(instructions);

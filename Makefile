@@ -14,8 +14,8 @@ release:
 	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm -O3
 
 test-memory-leaks:
-	valgrind bin/interpreter-test-1 tests/test.kk
-	valgrind bin/interpreter        tests/test.kk
+	valgrind --leak-check=full bin/interpreter-test-1 tests/test.kk 
+	valgrind --leak-check=full bin/interpreter        tests/test.kk 
 
 run:
 	@ bin/./interpreter tests/test.kk

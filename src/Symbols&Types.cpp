@@ -64,6 +64,9 @@ class Symbol {
 		void debug(){
 			printf("Symbol:\"%s\".",Name);
 		}
+		Symbol* Clone(){
+			return new Symbol(Name,Type);
+		}
 		~Symbol(){
 			delete Type;
 			free(Name);
@@ -110,9 +113,16 @@ class SymbolTableStack{
 			Definitions = new std::list<Definition*>;
 			DependencySymbols = new std::list<DependencySymbol*>();
 		}
-		void Push(std::list<Symbol*>* table){
+		void Push(const std::list<Symbol*>* table){
 			Top++;
-			Tables[Top] = table;
+			std::list<Symbol*>* temp = new std::list<Symbol*>;
+			for (std::list<Symbol*>::const_iterator it = table->begin(); it != table->end(); ++it) 
+				temp->push_back((*it)->Clone());
+			Tables[Top] = temp;
+		}
+		void PushNewTable(){
+			Top++;
+			Tables[Top] = new std::list<Symbol*>();
 		}
 		void Pop(void){
 			MaxSize = Max(MaxSize,CerentSize());

@@ -83,7 +83,7 @@ class BinaryExpression : public Expression{
 					break;
 			}
 		}
-		~BinaryExpression(){
+		~BinaryExpression() override {
 			delete FirstExpression;
 			delete SecondExpression;
 		}
@@ -143,7 +143,7 @@ class UnaryExpression : public Expression{
 					break;
 			}
 		}
-		~UnaryExpression(){
+		~UnaryExpression() override {
 			delete FirstExpression;
 		}
 };
@@ -163,7 +163,7 @@ class ArrayAccessExpression : public Expression{
 			Array->debug(tabs+1);
 			Index->debug(tabs+1);
 		}
-		~ArrayAccessExpression(){
+		~ArrayAccessExpression() override {
 			delete Array;
 			delete Index;
 		}
@@ -196,7 +196,7 @@ class StringExpression : public Expression{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("String Expression:%s\n",Value);
 		}
-		~StringExpression(){
+		~StringExpression() override {
 			free(Value);
 		}
 };
@@ -219,7 +219,7 @@ class IdentifierExpression : public Expression{
 			// TODO add referencing
 			derefrence(instructions,derefrence_num+1);
 		}
-		~IdentifierExpression(){
+		~IdentifierExpression() override {
 			free(Name);
 		}
 };
@@ -290,7 +290,10 @@ class FunctionCallExpression : public Expression{
 				
 			}
 		}
-		~FunctionCallExpression(){
+		~FunctionCallExpression() override {
+			// THEY ARE MESED UP, review tomorrow, (hopefully)
+			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+				delete (*it);
 			delete Parameters;
 			delete Function;
 		}

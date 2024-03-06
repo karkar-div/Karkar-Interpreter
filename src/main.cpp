@@ -10,12 +10,28 @@
 #include "ScopeStack.cpp"
 #include "VirtualMachine.cpp"
 
+struct yy_buffer_state{
+	FILE *yy_input_file;
+	char *yy_ch_buf;
+	char *yy_buf_pos;
+	int yy_buf_size;
+	int yy_n_chars;
+	int yy_is_our_buffer;
+	int yy_is_interactive;
+	int yy_at_bol;
+    int yy_bs_lineno; 
+    int yy_bs_column; 
+	int yy_fill_buffer;
+	int yy_buffer_status;
+};
+
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
-extern int yy_scan_string ( const char *yy_str  );
+extern yy_buffer_state* yy_scan_string ( const char *yy_str  );
 extern int Tab_Num;
 extern int Line_Index;
+extern int yy_delete_buffer(yy_buffer_state*);
 
 void yyerror(const char* s);
 
@@ -135,8 +151,9 @@ int main(int argc,char* argv[]) {
 	Symbol_Tables = new SymbolTableStack();
 	Global_Dependencies = new std::list<Dependency*>;
 
+	yy_buffer_state* buffer_state;
     try{
-	    yy_scan_string(outputBuffer+3);
+	    buffer_state = yy_scan_string(outputBuffer+3);
     }catch (const char * error_massage){
         printf("Unknown Token ! :%s",error_massage);
 		return -1;
@@ -149,6 +166,8 @@ int main(int argc,char* argv[]) {
         printf("Unknown grammer or Syntax near line %d as : %s \n",Line_Index,error_massage);
         return -1;
     }
+	
+	yy_delete_buffer(buffer_state);
 	free(outputBuffer);
 
     try{

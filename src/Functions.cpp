@@ -69,8 +69,9 @@ class Function{
 			Symbol_Tables->ResetSize();
 		}
 		~Function(){
-			// deleting parameters cases segmentation faults because it is duoble freed in Symbol_Tables
-			// please don't refactor
+			for (std::list<Symbol*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
+				delete (*it);
+			delete Parameters;
 			delete MainStatement;
 			delete ReturnType;
 			free(Name);
