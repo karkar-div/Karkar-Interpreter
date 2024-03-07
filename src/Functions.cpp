@@ -34,9 +34,9 @@ class Function{
 			Symbol_Tables->Definitions->push_back(new Definition(Name,instructions->size()-1)) ;
 
 			/* set up the stack*/
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::BP,0,false))); // Pushing the old Base Pointer so we dont lose it
-			instructions->push_back(new Instruction(InstructionType::Mov ,Parameter(RegisterType::BP,0,false),Parameter(RegisterType::SP,0,false))); // setuping the base pointer to a new stack frame
-			Instruction* StackAllocter = new Instruction(InstructionType::Sub,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::Null,0,false));
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::BP,0))); // Pushing the old Base Pointer so we dont lose it
+			instructions->push_back(new Instruction(InstructionType::Mov ,Parameter(RegisterType::BP,0),Parameter(RegisterType::SP,0))); // setuping the base pointer to a new stack frame
+			Instruction* StackAllocter = new Instruction(InstructionType::Sub,Parameter(RegisterType::SP,0),Parameter(RegisterType::Null,0));
 			instructions->push_back(StackAllocter);// add stack pre-allocation
 		
 
@@ -57,14 +57,14 @@ class Function{
 				/* leave Instruction hand implemented */
 				// the leave instruction meant to collapse the stack by moving bp to sp
 				// it also pop the stack top aka old bp into bp
-				instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false)));
-				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); 
+				instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0),Parameter(RegisterType::BP,0)));
+				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0))); 
 			
 				/* ret Instruction hand implemented */
 				// a ret instruction jump to the address stored at he top of the stack,
 				// this address is pushed by the caller 
-				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); 
-				instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); 
+				instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0))); 
+				instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0))); 
 			}
 			Symbol_Tables->ResetSize();
 		}

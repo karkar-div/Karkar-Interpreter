@@ -48,11 +48,9 @@ enum RegisterType{
 };
 
 struct Parameter{
-	bool IsDerefrence;
 	RegisterType Register;
 	int Offset;
-	Parameter(RegisterType type,int offset,bool is_derefrence){
-		IsDerefrence = is_derefrence;
+	Parameter(RegisterType type,int offset){
 		Register = type;
 		Offset = offset;
 	}
@@ -60,8 +58,6 @@ struct Parameter{
 
 	}
 	void PrintOffset(const char * str,int offset){
-		if(IsDerefrence)printf("[");
-		else printf(" ");
 		printf(str);
 
 		if (Offset > 0) // AKA Positive
@@ -71,8 +67,6 @@ struct Parameter{
 		if (Offset < 0)
 			printf("%d",offset);// printf does it atuomaticly
 		
-		if(IsDerefrence)printf("[");
-		else printf(" ");
 		
 	}
 	void debug(){

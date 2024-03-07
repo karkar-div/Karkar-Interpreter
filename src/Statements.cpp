@@ -38,18 +38,18 @@ class ReturnStatement : public Statement{
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			ReturnedExpression->GenerateByteCode(instructions);
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::AX,0,false))); // the value is already in the top of the stack
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::AX,0))); // the value is already in the top of the stack
 			/* leave Instruction hand implemented */
 			// the leave instruction meant to collapse the stack by moving bp to sp
 			// it also pop the stack top aka old bp into bp
-			instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0,false),Parameter(RegisterType::BP,0,false)));
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0,false))); 
+			instructions->push_back(new Instruction(InstructionType::Mov,Parameter(RegisterType::SP,0),Parameter(RegisterType::BP,0)));
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BP,0))); 
 		
 			/* ret Instruction hand implemented */
 			// a ret instruction jump to the address stored at he top of the stack,
 			// this address is pushed by the caller 
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0,false))); 
-			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0,false))); 
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::BX,0))); 
+			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::BX,0))); 
 			
 		}
 		~ReturnStatement() override {
@@ -102,10 +102,10 @@ class IfStatement : public CompoundStatement{
 			Condition->GenerateByteCode(instructions);
 			
 			// we will pop the result into a compairation register
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::CR,0,false)));
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::CR,0)));
 			
 			// skip if false by jumping ,continu if true by the command failing. the jump to line N is unknown
-			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0,false));
+			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0));
 			instructions->push_back(jmp_instruction);
 
 			Symbol_Tables->PushNewTable();
@@ -150,10 +150,10 @@ class WhileStatement : public CompoundStatement{
 			Condition->GenerateByteCode(instructions);
 			
 			// we will pop the result into a compairation register
-			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::CR,0,false)));
+			instructions->push_back(new Instruction(InstructionType::Pop,Parameter(RegisterType::CR,0)));
 			
 			// skip if false by jumping ,continu if true by the command failing. the jump to line N is unknown
-			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0,false));
+			Instruction* jmp_instruction = new Instruction(InstructionType::JN,Parameter(RegisterType::Null,0));
 			instructions->push_back(jmp_instruction);
 
 			Symbol_Tables->PushNewTable();
@@ -163,7 +163,7 @@ class WhileStatement : public CompoundStatement{
 			Symbol_Tables->Pop();
 
 			// jump to compair again ( note : this will happen only if true to compaire again)
-			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::Null,comparation_line,false)));
+			instructions->push_back(new Instruction(InstructionType::Jmp,Parameter(RegisterType::Null,comparation_line)));
 
 			// a Nop instruction works as a label
 			instructions->push_back(new Instruction(InstructionType::Nop));

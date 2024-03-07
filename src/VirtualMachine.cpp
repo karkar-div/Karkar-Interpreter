@@ -18,7 +18,7 @@ class VirtualMachine{
 		int64_t* Stack;
 		int64_t* StackPointer;
 		int64_t* BasePointer;
-		int64_t parameter_value(Parameter* param){
+		inline int64_t parameter_value(Parameter* param){
 			switch(param->Register){
 				case Null:
 					return param->Offset;
@@ -30,7 +30,7 @@ class VirtualMachine{
 					return Registers[param->Register];
 			}
 		}
-		int64_t* destination(Parameter param){
+		inline int64_t* destination(Parameter param){
 			switch(param.Register){
 				case SP:
 					return &((int64_t&)StackPointer);
@@ -40,7 +40,7 @@ class VirtualMachine{
 					return &Registers[param.Register];
 			}
 		}
-		int64_t binary_operator(InstructionType type,int64_t value1,int64_t value2){
+		inline int64_t binary_operator(InstructionType type,int64_t value1,int64_t value2){
 			switch(type){
 				case Add  : return  value1 +  value2;
 				case Sub  : return  value1 -  value2;
@@ -134,11 +134,12 @@ class VirtualMachine{
 						}
 						break;
 					case Exit:{
-						return;                        
+						return;
 					}
 					case so_call:{
 						std::list<int64_t>* args = new std::list<int64_t>;
-						for(int x = 0; x < parameter_value(&(instruction->Parameters[SECOND])) ;x++){
+						int args_count = parameter_value(&(instruction->Parameters[SECOND]));
+						for(int x = 0; x < args_count; x++){
 							args->push_front(*StackPointer);
 							StackPointer++;
 						}
@@ -155,8 +156,7 @@ class VirtualMachine{
 								*StackPointer
 							);
 							StackPointer++;
-						}
-						if(instruction->ParametersNum == 2)
+						} else
 							*(destination(instruction->Parameters[FIRST])) = binary_operator(
 								instruction->Type,
 								parameter_value(&(instruction->Parameters[FIRST])),

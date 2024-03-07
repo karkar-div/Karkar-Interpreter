@@ -136,7 +136,7 @@ class UnaryExpression : public Expression{
 					derefrence(instructions,derefrence_num);
 					break;
 				case Negativity :
-					instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false)));
+					instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0)));
 					FirstExpression->GenerateByteCode(instructions);
 					instructions->push_back(new Instruction(InstructionType::Sub));
 					derefrence(instructions,derefrence_num);
@@ -180,7 +180,7 @@ class NumberExpression : public Expression{
 			printf("Number Expression: %d\n",Value);
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,Value,false))); // the value is already in the top of the stack
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,Value))); // the value is already in the top of the stack
 			derefrence(instructions,derefrence_num);
 		}
 };
@@ -213,8 +213,8 @@ class IdentifierExpression : public Expression{
 			printf("Identifier Expression:%s\n",Name);
 		}
 		virtual void GenerateByteCode(std::list<Instruction*>* instructions,int derefrence_num = 0){
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::BP,0,false))); // the value is already in the top of the stack
-			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,Symbol_Tables->Find(Name),false)));
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::BP,0))); // the value is already in the top of the stack
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,Symbol_Tables->Find(Name))));
 			instructions->push_back(new Instruction(InstructionType::Sub));
 			// TODO add referencing
 			derefrence(instructions,derefrence_num+1);
@@ -241,7 +241,7 @@ class FunctionCallExpression : public Expression{
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
 			if(Symbol_Tables->FindDefinition(((IdentifierExpression*)Function)->Name) != -1){
-				Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0,false));
+				Instruction* jmp_int = new Instruction(InstructionType::Push,Parameter(RegisterType::Null,0));
 				instructions->push_back(jmp_int); 
 
 				instructions->push_back(new Instruction(InstructionType::Push)); 
@@ -260,14 +260,13 @@ class FunctionCallExpression : public Expression{
 							RegisterType::Null,
 							Symbol_Tables->FindDefinition(
 								((IdentifierExpression*)Function)->Name
-							),
-							false
+							)
 				)));
 
 				instructions->push_back(new Instruction(InstructionType::Nop)); 
 				jmp_int->Parameters[FIRST].Offset = instructions->size()-1;
 
-				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0)));
 			}else if(Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name ) != -1){
 				for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
 					(*it)->GenerateByteCode(instructions);
@@ -276,17 +275,15 @@ class FunctionCallExpression : public Expression{
 						InstructionType::so_call,
 						Parameter(
 							RegisterType::Null,
-							Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name ),
-							false
+							Symbol_Tables->FindExternedFunction(((IdentifierExpression*)Function)->Name )
 						),
 						Parameter(
 							RegisterType::Null,
-							Parameters->size(),
-							false
+							Parameters->size()
 						)
 					)
 				);
-				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0,false)));
+				instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::AX,0)));
 				
 			}
 		}
