@@ -97,7 +97,7 @@ class VirtualMachine{
 					/* control flow */
 					case Jmp:{
 						Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
-						Registers[RegisterType::IP]--;
+						//Registers[RegisterType::IP]--;
 						break;
 					}
 					case Nop:{
@@ -106,20 +106,26 @@ class VirtualMachine{
 					case JN:{
 						if(Registers[RegisterType::CR] == false){
 							Registers[RegisterType::IP] = parameter_value(&(instruction->Parameters[FIRST]));
-							Registers[RegisterType::IP]--;
+							//Registers[RegisterType::IP]--;
 						}
 						break;
 					}
 					/* Stack minipulation (not that the Stack grows upowrd)*/
 					case Push:{
 						StackPointer--;
-						if(instruction->ParametersNum == 1)
-							*StackPointer = parameter_value(&(instruction->Parameters[FIRST]));
 						break;                        
 					}
 					case Pop:{
-						if(instruction->ParametersNum == 1)
-							*(destination(instruction->Parameters[FIRST])) = *StackPointer;
+						StackPointer++;
+						break;                        
+					}
+					case Push_this:{
+						StackPointer--;
+						*StackPointer = parameter_value(&(instruction->Parameters[FIRST]));
+						break;                        
+					}
+					case Pop_to:{
+						*(destination(instruction->Parameters[FIRST])) = *StackPointer;
 						StackPointer++;
 						break;                        
 					}
@@ -137,14 +143,23 @@ class VirtualMachine{
 						return;
 					}
 					case so_call:{
-						std::list<int64_t>* args = new std::list<int64_t>;
 						int args_count = parameter_value(&(instruction->Parameters[SECOND]));
-						for(int x = 0; x < args_count; x++){
-							args->push_front(*StackPointer);
-							StackPointer++;
+						if(args_count <= 6){
+							int64_t args[6];
+							for(int i = 0; i < args_count; i++){
+								args[i] = *StackPointer;
+								StackPointer++;
+							}
+							Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args,args_count);
+						} else {
+							int64_t* args = new int64_t[args_count];
+							for(int i = 0; i < args_count; i++){
+								args[i] = *StackPointer;
+								StackPointer++;
+							}
+							Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args,args_count);
+							delete args;
 						}
-						Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args);
-						delete args;
 						break;
 					}
 					/* binary operators */
@@ -156,7 +171,7 @@ class VirtualMachine{
 								*StackPointer
 							);
 							StackPointer++;
-						} else
+						} if(instruction->ParametersNum == 2)
 							*(destination(instruction->Parameters[FIRST])) = binary_operator(
 								instruction->Type,
 								parameter_value(&(instruction->Parameters[FIRST])),

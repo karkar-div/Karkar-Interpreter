@@ -27,8 +27,10 @@ enum InstructionType{
 	Nop, // 0
 	JN,  // 1
 	/* stack related */
-	Push, // 0 , 1
-	Pop,  // 0 , 1
+	Push,      // 0
+	Pop,       // 0
+	Push_this, // 1
+	Pop_to,    // 1
 	/* lea */
 	drfrnc, // 0
 	/* other */
@@ -94,7 +96,18 @@ struct Instruction{
 	Instruction(InstructionType type,Parameter value){
 		ParametersNum = 1; // AKA unary bytecode operator
 		Parameters[FIRST] = value;
-		Type = type;
+		switch (type){
+			case InstructionType::Pop:
+				Type = InstructionType::Pop_to;
+				break;
+			case InstructionType::Push:
+				Type = InstructionType::Push_this;
+				break;
+			default:
+				Type = type;
+				break;
+		}
+		
 	}
 		Instruction(InstructionType type,Parameter first_value,Parameter second_value){
 		ParametersNum = 2; // AKA binary bytecode operator

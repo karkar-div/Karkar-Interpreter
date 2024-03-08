@@ -111,12 +111,19 @@ char* read_and_convert_file(const char* inputFileName){
 	return outputBuffer;
 }
 
+enum RunOptions{
+	Normal,
+	ByteCode,
+};
+
 int main(int argc,char* argv[]) {
 	const char* inputFileName = argv[1];
-	const char* debug_option = argv[2];
+	const char* debug_option_str = argv[2];
+	const char* running_option_str = argv[3];
 
 	bool debug = false;
 	bool verbose = false;
+	enum RunOptions run_options = RunOptions::Normal;
 	
 	if(argc == 1){
 		printf("not enough arguments, please provide a file name .\n");
@@ -124,12 +131,17 @@ int main(int argc,char* argv[]) {
 	}
 
 	if(argc >= 3){
-		if(!strcmp(debug_option,"debug")){
+		if(!strcmp(debug_option_str,"debug")){
 			debug = true;
 		}
-		if(!strcmp(debug_option,"verbose-debug")){
+		if(!strcmp(debug_option_str,"verbose-debug")){
 			debug = true;
 			verbose = true;
+		}
+	}
+	if(argc >= 4){
+		if(!strcmp(running_option_str,"byte-code")){
+			run_options = RunOptions::ByteCode;
 		}
 	}
 
@@ -178,30 +190,48 @@ int main(int argc,char* argv[]) {
         return -1;
     }
 
-	/* Running the code */
-	try{
-		VirtualMachine* VM = new VirtualMachine(Symbol_Tables->FindDefinition("main"));
-		std::vector<Instruction*>* temp_instructions_vector = new std::vector<Instruction*>(
-			lib->Instructions->begin(),
-			lib->Instructions->end()
-		);
-		std::vector<Dependency*>* temp_dependencies_vector = new std::vector<Dependency*>(
-			Global_Dependencies->begin(),
-			Global_Dependencies->end()
-		);
-		VM->Run(
-			temp_instructions_vector,
-			temp_dependencies_vector,
-			debug && verbose
-		);
-		delete VM;
-		delete temp_dependencies_vector;
-		delete temp_instructions_vector;
+	switch(run_options){
+		case Normal:
+			try{
+				VirtualMachine* VM = new VirtualMachine(Symbol_Tables->FindDefinition("main"));
+				std::vector<Instruction*>* temp_instructions_vector = new std::vector<Instruction*>(
+					lib->Instructions->begin(),
+					lib->Instructions->end()
+				);
+				std::vector<Dependency*>* temp_dependencies_vector = new std::vector<Dependency*>(
+					Global_Dependencies->begin(),
+					Global_Dependencies->end()
+				);
+				VM->Run(
+					temp_instructions_vector,
+					temp_dependencies_vector,
+					debug && verbose
+				);
+				delete VM;
+				delete temp_dependencies_vector;
+				delete temp_instructions_vector;
+			}
+			catch(const char* error_massage){
+				printf("Unexpected Run-time Error :%s",error_massage);
+				return -1;
+			}
+			break;
+		case ByteCode:{
+			FILE* file = fopen("out.kkb", "wb");
+			if (file == NULL){
+				printf("Failed to open out.kk for writing\n");
+				return -1;
+			}
+			for (std::list<Instruction*>::iterator it = lib->Instructions->begin();it != lib->Instructions->end(); ++it) {
+				Instruction* instruction = *it;
+				fwrite(instruction, sizeof(Instruction), 1, file);
+			}
+			fclose(file);
+			printf("Binary data has been written to out.kk\n");
+			break;
+		}
 	}
-	catch(const char* error_massage){
-		printf("Unexpected Run-time Error :%s",error_massage);
-		return -1;
-	}
+
 	if(debug)printf("Program finished execution successfully.\n");
 	
 	delete lib;

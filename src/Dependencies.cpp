@@ -9,6 +9,8 @@
 
 class Dependency{
     private:
+        void *so_library;
+        int64_t (*loaded_function)(int64_t,int64_t,int64_t,int64_t,int64_t,int64_t);
         void safe_strcopy(char* desk,const char* source,int buffersize){
             if((strlen(desk)+1)<=(size_t)buffersize)
                 strcpy(desk,source);
@@ -21,37 +23,21 @@ class Dependency{
         Dependency(const char* library,const char* function){
             safe_strcopy(Library,library,sizeof(Library));
             safe_strcopy(Function,function,sizeof(Function));
-        }
-        int64_t Run(std::list<int64_t>* arguments){
-            void *so_library = dlopen(Library, RTLD_LAZY);
+
+            so_library = dlopen(Library, RTLD_LAZY);
             if (!so_library) 
                 throw(dlerror());
-            int64_t (*hello)(int64_t,int64_t,int64_t,int64_t,int64_t,int64_t) = (int64_t(*)(int64_t,int64_t,int64_t,int64_t,int64_t,int64_t))dlsym(so_library,Function);
-            if (!hello) {
+            loaded_function = (int64_t(*)(int64_t,int64_t,int64_t,int64_t,int64_t,int64_t))dlsym(so_library,Function);
+            if (!loaded_function) {
                 dlclose(so_library);
                 throw(dlerror());
             }
-            int64_t args[6];
-            int index = 0;
-            for(std::list<int64_t>::iterator it = arguments->begin(); it != arguments->end(); ++it){
-                if(index <= 5){
-                    args[index] = (*it);
-                }else{
-                    //asm("push");
-                }
-                index++;
-            }
-
-            int64_t returned_value = hello(args[0],args[1],args[2],args[3],args[4],args[5]);
-            for(std::list<int64_t>::iterator it = arguments->begin(); it != arguments->end(); ++it){
-                if(index <= 5){
-                }else{
-                    //asm("pop");
-                }
-                index++;
-            }
+        }
+        inline int64_t Run(int64_t* args,int args_num){
+            return loaded_function(args[0],args[1],args[2],args[3],args[4],args[5]);
+        }
+        ~Dependency(){
             dlclose(so_library);
-            return returned_value;
         }
 };
 
