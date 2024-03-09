@@ -109,36 +109,47 @@ struct Instruction{
 		}
 		
 	}
-		Instruction(InstructionType type,Parameter first_value,Parameter second_value){
+	Instruction(InstructionType type,Parameter first_value,Parameter second_value){
 		ParametersNum = 2; // AKA binary bytecode operator
 		Parameters[FIRST] = first_value;
 		Parameters[SECOND] = second_value;
 		Type = type;
 	}
-	void debug(){
-		switch (Type){
-			case Mov    : printf("Mov    ");break;
-			case Push   : printf("Push   ");break;
-			case Pop    : printf("Pop    ");break;
-			case Add    : printf("Add    ");break;
-			case Sub    : printf("Sub    ");break;
-			case Div    : printf("Div    ");break;
-			case Mul    : printf("Mul    ");break;
-			case Rem    : printf("Rem    ");break;
-			case And    : printf("And    ");break;
-			case Or     : printf("Or     ");break;
-			case Xor    : printf("Xor    ");break;
-			case Not    : printf("Not    ");break;
-			case Cmp    : printf("Cmp    ");break;
-			case CmpB   : printf("CmpB   ");break;
-			case Jmp    : printf("Jmp    ");break;
-			case Nop    : printf("Nop    ");break;
-			case JN     : printf("JN     ");break;
-			case drfrnc : printf("drfrnc ");break;
-			case so_call: printf("so_call");break;
-			case Exit   : printf("exit   ");break;
-			default     : printf("OMG    ");break;
+	Instruction* Clone() const{
+		Instruction* temp = new Instruction(InstructionType::Nop);
+		temp->Type = Type;
+		for(int i = 0; i < ParametersNum;i++){
+			temp->Parameters[i] = Parameters[i];
 		}
+		temp->ParametersNum = ParametersNum;
+		return temp;
+	}
+	void debug(){
+		switch (Type){     
+			case Mov       : printf("Mov         ");break;
+			case Push      : printf("Push        ");break;
+			case Pop       : printf("Pop         ");break;
+			case Push_this : printf("Push_this   ");break;
+			case Pop_to    : printf("Pop_to      ");break;
+			case Add       : printf("Add         ");break;
+			case Sub       : printf("Sub         ");break;
+			case Div       : printf("Div         ");break;
+			case Mul       : printf("Mul         ");break;
+			case Rem       : printf("Rem         ");break;
+			case And       : printf("And         ");break;
+			case Or        : printf("Or          ");break;
+			case Xor       : printf("Xor         ");break;
+			case Not       : printf("Not         ");break;
+			case Cmp       : printf("Cmp         ");break;
+			case CmpB      : printf("CmpB        ");break;
+			case Jmp       : printf("Jmp         ");break;
+			case Nop       : printf("Nop         ");break;
+			case JN        : printf("JN          ");break;
+			case drfrnc    : printf("drfrnc      ");break;
+			case so_call   : printf("so_call     ");break;
+			case Exit      : printf("exit        ");break;
+			default        : printf("OMG         ");break;
+		}     
 		printf(" ");
 		for(int i = 0 ; i < ParametersNum;i++){
 			Parameters[i].debug();

@@ -20,19 +20,19 @@ class Expression{
 class BinaryExpression : public Expression{
 	public:
 		enum Type{
-			Addition = InstructionType::Add ,
-			Subtraction = InstructionType::Sub ,
-			Divition = InstructionType::Div,
-			Multipication = InstructionType::Mul,
-			Remanider = InstructionType::Rem,
-			Comparation = InstructionType::Cmp ,
+			Addition              = InstructionType::Add ,
+			Subtraction           = InstructionType::Sub ,
+			Divition              = InstructionType::Div,
+			Multipication         = InstructionType::Mul,
+			Remanider             = InstructionType::Rem,
+			Comparation           = InstructionType::Cmp ,
 			BiggerThanComparation = InstructionType::CmpB,
-			BitwizeAnd = InstructionType::And,
-			BitwizeOr = InstructionType::Or,
-			BitwizeXor = InstructionType::Xor,
-			MemberAccess = 1002 ,
-			PointerMemberAccess = 1003,
-			Moving  = 1004,
+			BitwizeAnd            = InstructionType::And,
+			BitwizeOr             = InstructionType::Or,
+			BitwizeXor            = InstructionType::Xor,
+			MemberAccess        = -1 ,
+			PointerMemberAccess = -2,
+			Moving              = -3,
 		};
 		Expression* FirstExpression;
 		Expression* SecondExpression;

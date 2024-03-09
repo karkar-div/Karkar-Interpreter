@@ -13,6 +13,9 @@ release:
 	flex src/lexer.l
 	g++ src/main.cpp lex.yy.c  -o bin/interpreter -lm -O3
 
+build-vm: 
+	g++ src/main-vm.cpp  -o bin/kk-vm -lm -g
+
 test-memory-leaks:
 	valgrind --leak-check=full bin/interpreter-test-1 tests/test.kk 
 	valgrind --leak-check=full bin/interpreter        tests/test.kk 

@@ -222,9 +222,21 @@ int main(int argc,char* argv[]) {
 				printf("Failed to open out.kk for writing\n");
 				return -1;
 			}
+			int entry_point = Symbol_Tables->FindDefinition("main");
+			fwrite(&entry_point, sizeof(int), 1, file);
+			
+			int instructions_count = lib->Instructions->size();
+			fwrite(&instructions_count, sizeof(int), 1, file);
 			for (std::list<Instruction*>::iterator it = lib->Instructions->begin();it != lib->Instructions->end(); ++it) {
 				Instruction* instruction = *it;
 				fwrite(instruction, sizeof(Instruction), 1, file);
+			}
+			int dependency_count = Global_Dependencies->size();
+			fwrite(&dependency_count, sizeof(int), 1, file);
+			for (std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end(); ++it) {
+				Dependency* dependency = *it;
+				fwrite(dependency, sizeof(Dependency), 1, file);
+				dependency->debug();
 			}
 			fclose(file);
 			printf("Binary data has been written to out.kk\n");
