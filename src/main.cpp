@@ -118,10 +118,10 @@ enum RunOptions{
 
 int main(int argc,char* argv[]) {
 	const char* inputFileName = argv[1];
-	const char* debug_option_str = argv[2];
+	const char* info_option_str = argv[2];
 	const char* running_option_str = argv[3];
 
-	bool debug = false;
+	bool info = false;
 	bool verbose = false;
 	enum RunOptions run_options = RunOptions::Normal;
 	
@@ -131,11 +131,11 @@ int main(int argc,char* argv[]) {
 	}
 
 	if(argc >= 3){
-		if(!strcmp(debug_option_str,"debug")){
-			debug = true;
+		if(!strcmp(info_option_str,"info")){
+			info = true;
 		}
-		if(!strcmp(debug_option_str,"verbose-debug")){
-			debug = true;
+		if(!strcmp(info_option_str,"verbose-info")){
+			info = true;
 			verbose = true;
 		}
 	}
@@ -155,7 +155,7 @@ int main(int argc,char* argv[]) {
 	}
 
 	// Print the converted content to the console
-	if(debug)printf("File Content:\n%s\n", outputBuffer);
+	if(info)printf("File Content:\n%s\n", outputBuffer);
 
 	// prepere lib mem
 	lib = new Library();
@@ -173,7 +173,7 @@ int main(int argc,char* argv[]) {
 
     try{
         yyparse();
-        if(debug)lib->debug(0);
+        if(info)lib->info(0);
     }catch(const char * error_massage){
         printf("Unknown grammer or Syntax near line %d as : %s \n",Line_Index,error_massage);
         return -1;
@@ -184,7 +184,7 @@ int main(int argc,char* argv[]) {
 
     try{
         lib->GenerateByteCode();
-        if(debug)lib->debug_bytecode();
+        if(info)lib->info_bytecode();
     } catch (const char * error_massage) {
         printf("Unexpected Byte Code Generator Error near line %d as : %s \n",Line_Index,error_massage);
         return -1;
@@ -205,7 +205,7 @@ int main(int argc,char* argv[]) {
 				VM->Run(
 					temp_instructions_vector,
 					temp_dependencies_vector,
-					debug && verbose
+					info && verbose
 				);
 				delete VM;
 				delete temp_dependencies_vector;
@@ -236,7 +236,7 @@ int main(int argc,char* argv[]) {
 			for (std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end(); ++it) {
 				Dependency* dependency = *it;
 				fwrite(dependency, sizeof(Dependency), 1, file);
-				dependency->debug();
+				dependency->info();
 			}
 			fclose(file);
 			printf("Binary data has been written to out.kk\n");
@@ -244,7 +244,7 @@ int main(int argc,char* argv[]) {
 		}
 	}
 
-	if(debug)printf("Program finished execution successfully.\n");
+	if(info)printf("Program finished execution successfully.\n");
 	
 	delete lib;
 	delete Scopes;

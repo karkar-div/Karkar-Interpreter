@@ -12,7 +12,7 @@ class Expression{
 				instructions->push_back(new Instruction(InstructionType::drfrnc));
 		}
 	public:
-		virtual void debug(int tabs){}
+		virtual void info(int tabs){}
 		virtual void GenerateByteCode(std::list<Instruction*>* instructions,int derefrence_num = 0){}
 		virtual ~Expression(){}
 };
@@ -42,7 +42,7 @@ class BinaryExpression : public Expression{
 			SecondExpression = second_expr;
 			Operation = operation;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Binary Expression:");
 			switch (Operation){
@@ -61,8 +61,8 @@ class BinaryExpression : public Expression{
 				case Moving :printf("Moving"); break;
 			}
 			printf("\n");
-			FirstExpression->debug(tabs+1);
-			SecondExpression->debug(tabs+1);
+			FirstExpression->info(tabs+1);
+			SecondExpression->info(tabs+1);
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
 			switch(Operation){
@@ -104,7 +104,7 @@ class UnaryExpression : public Expression{
 			FirstExpression = first_expr;
 			Operation = operation;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Unary Expression:");
 			switch(Operation){
@@ -115,7 +115,7 @@ class UnaryExpression : public Expression{
 				case Negativity : printf("Negativity"); break;
 			}
 			printf("\n");
-			FirstExpression->debug(tabs+1);
+			FirstExpression->info(tabs+1);
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
 			switch(Operation){
@@ -157,11 +157,11 @@ class ArrayAccessExpression : public Expression{
 			Array = array;
 			Index = index;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Array Access Expression\n");
-			Array->debug(tabs+1);
-			Index->debug(tabs+1);
+			Array->info(tabs+1);
+			Index->info(tabs+1);
 		}
 		~ArrayAccessExpression() override {
 			delete Array;
@@ -175,7 +175,7 @@ class NumberExpression : public Expression{
 		NumberExpression(int value){
 			Value = value;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Number Expression: %d\n",Value);
 		}
@@ -192,7 +192,7 @@ class StringExpression : public Expression{
 		StringExpression(char* value){
 			Value = value;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("String Expression:%s\n",Value);
 		}
@@ -208,7 +208,7 @@ class IdentifierExpression : public Expression{
 		IdentifierExpression(char* name){
 			Name = name;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Identifier Expression:%s\n",Name);
 		}
@@ -232,12 +232,12 @@ class FunctionCallExpression : public Expression{
 			Function = function;
 			Parameters = parameters;
 		}
-		void debug (int tabs) override {
+		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Function Call Expression\n");
-			Function->debug(tabs+1);
+			Function->info(tabs+1);
 			for (std::list<Expression*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it)
-				(*it)->debug(tabs+1);
+				(*it)->info(tabs+1);
 		}
 		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
 			if(Symbol_Tables->FindDefinition(((IdentifierExpression*)Function)->Name) != -1){

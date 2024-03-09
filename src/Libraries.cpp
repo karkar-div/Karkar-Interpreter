@@ -9,24 +9,24 @@ class Library{
 		Library(){
 			Instructions = new std::list<Instruction*>;
 		}
-		void debug(int tabs){
+		void info(int tabs){
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("The Abstract Syntax Tree AST :");
 			printf("\n");
 			for (std::list<Function*>::iterator it = Functions->begin(); it != Functions->end(); ++it) 
-				(*it)->debug(tabs+1);
+				(*it)->info(tabs+1);
 		}
 		void GenerateByteCode(){
 			
 			for (std::list<Function*>::iterator it = Functions->begin(); it != Functions->end(); ++it)
 				(*it)->GenerateByteCode(Instructions);
 		}
-		void debug_bytecode(){
+		void info_bytecode(){
 			printf("ByteCode:\n");
 			int index = 0;
 			for (std::list<Instruction*>::iterator it = Instructions->begin(); it != Instructions->end(); ++it) {
 				printf("    %03d: ",index);
-				(*it)->debug();
+				(*it)->info();
 				index++;
 			}
 		}

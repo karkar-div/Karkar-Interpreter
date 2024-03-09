@@ -16,13 +16,13 @@ class Function{
 			MainStatement = stmt;
 			Parameters = parameters;
 		}
-		void debug(int tabs){
+		void info(int tabs){
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Function:%s ",Name);
 			for (std::list<Symbol*>::iterator it = Parameters->begin(); it != Parameters->end(); ++it) 
-				(*it)->debug();
+				(*it)->info();
 			printf("\n");
-			MainStatement->debug(tabs+1);
+			MainStatement->info(tabs+1);
 		}
 		
 		void GenerateByteCode(std::list<Instruction*>* instructions){

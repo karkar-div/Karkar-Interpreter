@@ -9,9 +9,9 @@
 
 int main(int argc,char* argv[]) {
 	const char* inputFileName = argv[1];
-	const char* debug_option_str = argv[2];
+	const char* info_option_str = argv[2];
 
-	bool debug = false;
+	bool info = false;
 	bool verbose = false;
 	
 	if(argc == 1){
@@ -20,11 +20,11 @@ int main(int argc,char* argv[]) {
 	}
 
 	if(argc >= 3){
-		if(!strcmp(debug_option_str,"debug")){
-			debug = true;
+		if(!strcmp(info_option_str,"info")){
+			info = true;
 		}
-		if(!strcmp(debug_option_str,"verbose-debug")){
-			debug = true;
+		if(!strcmp(info_option_str,"verbose-info")){
+			info = true;
 			verbose = true;
 		}
 	}
@@ -47,9 +47,9 @@ int main(int argc,char* argv[]) {
             fread(&instruction, sizeof(Instruction), 1, binaryFile);
             instructions->push_back(instruction.Clone());
         }
-        if(debug)
+        if(info)
             for(Instruction* it : *instructions)
-                it->debug();
+                it->info();
 
         int dependencies_count = 0;
 		fread(&dependencies_count, sizeof(int), 1, binaryFile);
@@ -60,9 +60,9 @@ int main(int argc,char* argv[]) {
             dependencies->push_back(dependency.Clone());
         }
         
-        if(debug)
+        if(info)
             for(Dependency* it : *dependencies)
-                it->debug();
+                it->info();
 
         fclose(binaryFile);
     }catch(...){
@@ -75,7 +75,7 @@ int main(int argc,char* argv[]) {
         VM->Run(
             instructions,
             dependencies,
-            debug && verbose
+            info && verbose
         );
         delete VM;
     }catch(const char* error_massage){
@@ -83,7 +83,7 @@ int main(int argc,char* argv[]) {
         return -1;
     }
 
-	if(debug)printf("Program finished execution successfully.\n");
+	if(info)printf("Program finished execution successfully.\n");
 
 	for(Dependency* it : *dependencies)
 		delete it;

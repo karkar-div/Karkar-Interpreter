@@ -41,7 +41,7 @@ class Dependency{
         Dependency* Clone() const {
             return new Dependency(Library,Function);
         }
-        void debug(){
+        void info(){
             printf("Library: %s\n",Library);
             printf("Function: %s\n",Function);
         }

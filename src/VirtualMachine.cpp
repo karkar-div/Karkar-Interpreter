@@ -67,10 +67,10 @@ class VirtualMachine{
 			BasePointer = &Stack[stack_size-1];
 			Registers[RegisterType::IP] = entrypoint;
 		}
-		void Run(const std::vector<Instruction*>* instructions,const std::vector<Dependency*>* Dependencies,bool debug = false){
+		void Run(const std::vector<Instruction*>* instructions,const std::vector<Dependency*>* Dependencies,bool info = false){
 			while(true){
 				Instruction* instruction = (*instructions)[Registers[RegisterType::IP]];
-				if(debug){
+				if(info){
 					printf("[");
 					for(int x = 0;x < 10;x++){
 						printf(" ");
@@ -84,7 +84,7 @@ class VirtualMachine{
 					printf("AX:%zd ",Registers[RegisterType::AX]);
 					printf("IP:%zd ",Registers[RegisterType::IP]);
 					printf("SP:%zd ",StackPointer);
-					instruction->debug();
+					instruction->info();
 				}
 				switch (instruction->Type){
 					/* memory control */

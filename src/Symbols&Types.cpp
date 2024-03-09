@@ -17,7 +17,7 @@ int Max(int x,int y){
 class VarType{
 	public:
 		int Size;
-		virtual void debug(int tabs){}
+		virtual void info(int tabs){}
 		virtual VarType* Clone() const {
 			VarType* temp = (VarType*)malloc(sizeof(VarType));
 			memcpy(temp,this,sizeof(VarType));
@@ -30,7 +30,7 @@ class IntType : public VarType{
 		IntType():VarType(){
 			Size = 8;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Size:%d\n",Size);
 		}
@@ -44,7 +44,7 @@ class CharType : public VarType{
 		CharType():VarType(){
 			Size = 1;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Size:%d\n",Size);
 		}
@@ -61,7 +61,7 @@ class Symbol {
 			DefaultDereferencing = 1;
 		}
 		Symbol(){}
-		void debug(){
+		void info(){
 			printf("Symbol:\"%s\".",Name);
 		}
 		Symbol* Clone(){

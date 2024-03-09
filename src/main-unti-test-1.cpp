@@ -115,9 +115,9 @@ char* read_and_convert_file(const char* inputFileName){
 
 int main(int argc,char* argv[]) {
 	const char* inputFileName = argv[1];
-	const char* debug_option = argv[2];
+	const char* info_option = argv[2];
 
-	bool debug = false;
+	bool info = false;
 	bool verbose = false;
 	
 	if(argc == 1){
@@ -126,11 +126,11 @@ int main(int argc,char* argv[]) {
 	}
 
 	if(argc >= 3){
-		if(!strcmp(debug_option,"debug")){
-			debug = true;
+		if(!strcmp(info_option,"info")){
+			info = true;
 		}
-		if(!strcmp(debug_option,"verbose-debug")){
-			debug = true;
+		if(!strcmp(info_option,"verbose-info")){
+			info = true;
 			verbose = true;
 		}
 	}
@@ -145,7 +145,7 @@ int main(int argc,char* argv[]) {
 	}
 
 	// Print the converted content to the console
-	if(debug)printf("File Content:\n%s\n", outputBuffer);
+	if(info)printf("File Content:\n%s\n", outputBuffer);
 
 	// prepere lib mem
 	lib = new Library();
@@ -179,7 +179,7 @@ int main(int argc,char* argv[]) {
 
 
 	/* Running the code */
-	if(debug)printf("Program finished execution successfully.\n");
+	if(info)printf("Program finished execution successfully.\n");
 
 
 

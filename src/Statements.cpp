@@ -7,7 +7,7 @@ class Instruction;
 
 class Statement{
 	public:
-		virtual void debug(int tabs){}
+		virtual void info(int tabs){}
 		virtual void GenerateByteCode(std::list<Instruction*>* instructions){}
 		virtual ~Statement() {}
 };
@@ -15,7 +15,7 @@ class Statement{
 class EmptyStatement : public Statement{
 	public:
 		EmptyStatement(){}
-		void debug(int tabs){
+		void info(int tabs){
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Empty Statement\n");
 		}
@@ -31,10 +31,10 @@ class ReturnStatement : public Statement{
 		ReturnStatement(Expression* expr){
 			ReturnedExpression = expr;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Return Statement\n");
-			ReturnedExpression->debug(tabs+1);
+			ReturnedExpression->info(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			ReturnedExpression->GenerateByteCode(instructions);
@@ -63,11 +63,11 @@ class CompoundStatement : public Statement{
 		CompoundStatement(std::list<Statement*>* list ){
 			Statements = list;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Compound Statement\n");
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
-				(*it)->debug(tabs+1);
+				(*it)->info(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			Symbol_Tables->PushNewTable();
@@ -89,12 +89,12 @@ class IfStatement : public CompoundStatement{
 		IfStatement(std::list<Statement*>* list,Expression* condition):CompoundStatement(list){
 			Condition = condition;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("If Statement\n");
-			Condition->debug(tabs+1);
+			Condition->info(tabs+1);
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it)
-				(*it)->debug(tabs+1);
+				(*it)->info(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 
@@ -133,12 +133,12 @@ class WhileStatement : public CompoundStatement{
 		WhileStatement(std::list<Statement*>* list,Expression* condition):CompoundStatement(list){
 			Condition = condition;
 		}
-		void debug(int tabs) override{
+		void info(int tabs) override{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("While Statement\n");
-			Condition->debug(tabs+1);
+			Condition->info(tabs+1);
 			for (std::list<Statement*>::iterator it = Statements->begin(); it != Statements->end(); ++it) 
-				(*it)->debug(tabs+1);
+				(*it)->info(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 
@@ -187,12 +187,12 @@ class VarDefineStatement : public Statement{
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			Symbol_Tables->Tables[Symbol_Tables->Top]->push_back(new Symbol(Identifier,Type));
 		}
-		void debug(int tabs) override{
+		void info(int tabs) override{
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Var Define Statement:\n");
 			for(int x = 0;x < tabs+1;x++)printf("    ");
 			printf("Identifier:%s\n",Identifier);
-			Type->debug(tabs+1);
+			Type->info(tabs+1);
 		}
 		~VarDefineStatement() override {
 			delete Type;
@@ -206,10 +206,10 @@ class ExpressionBasedStatement : public Statement{
 		ExpressionBasedStatement(Expression* expr){
 			TheExpression = expr;
 		}
-		void debug(int tabs) override {
+		void info(int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("Expression Based Statement\n");
-			TheExpression->debug(tabs+1);
+			TheExpression->info(tabs+1);
 		}
 		void GenerateByteCode(std::list<Instruction*>* instructions) override {
 			TheExpression->GenerateByteCode(instructions);

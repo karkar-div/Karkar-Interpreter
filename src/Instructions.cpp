@@ -71,7 +71,7 @@ struct Parameter{
 		
 		
 	}
-	void debug(){
+	void info(){
 		switch (Register){
 			case Null:PrintOffset(""  ,Offset);break;
 			case SP  :PrintOffset("SP",Offset);break;
@@ -124,7 +124,7 @@ struct Instruction{
 		temp->ParametersNum = ParametersNum;
 		return temp;
 	}
-	void debug(){
+	void info(){
 		switch (Type){     
 			case Mov       : printf("Mov         ");break;
 			case Push      : printf("Push        ");break;
@@ -152,7 +152,7 @@ struct Instruction{
 		}     
 		printf(" ");
 		for(int i = 0 ; i < ParametersNum;i++){
-			Parameters[i].debug();
+			Parameters[i].info();
 			if(i < ParametersNum-1)
 				printf(",");
 		}
