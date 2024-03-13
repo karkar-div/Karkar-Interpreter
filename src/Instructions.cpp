@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <cstdlib>
+#include <memory.h>
 
 #define FIRST 0
 #define SECOND 1
@@ -118,13 +120,8 @@ struct Instruction{
 		Type = type;
 	}
 	Instruction* Clone() const{
-		Instruction* temp = new Instruction(InstructionType::Nop);
-		temp->Type = Type;
-		for(int i = 0; i < ParametersNum;i++){
-			temp->Parameters[i] = Parameters[i];
-		}
-		temp->ParametersNum = ParametersNum;
-		return temp;
+		void* temp = malloc(sizeof(Instruction));
+		return (Instruction*)memcpy(temp,this,sizeof(Instruction));
 	}
 	void info(){
 		switch (Type){     

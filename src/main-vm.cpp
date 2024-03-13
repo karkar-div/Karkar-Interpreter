@@ -30,6 +30,7 @@ int main(int argc,char* argv[]) {
 	}
     std::vector<Instruction*>* instructions = new std::vector<Instruction*>(0);
     std::vector<Dependency*>* dependencies = new std::vector<Dependency*>;
+    DataSection = new char[100];
     int entry_point = 0;
 
     try{
@@ -60,6 +61,10 @@ int main(int argc,char* argv[]) {
             dependencies->push_back(dependency.Clone());
         }
         
+        int data_section_size = 0;
+		fread(&data_section_size, sizeof(int), 1, binaryFile);
+		fread(DataSection, sizeof(char), data_section_size, binaryFile);
+
         if(info)
             for(Dependency* it : *dependencies)
                 it->info();

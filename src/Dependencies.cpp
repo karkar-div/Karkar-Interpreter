@@ -21,8 +21,8 @@ class Dependency{
         char Function[20];
         char Library[20];
         Dependency(const char* library,const char* function,bool init = true){
-            safe_strcopy(Library,library,sizeof(Library));
-            safe_strcopy(Function,function,sizeof(Function));
+            safe_strcopy(Library,library,sizeof(Library)-1);
+            safe_strcopy(Function,function,sizeof(Function)-1);
             if(init) initalize();
         }
         void initalize(){

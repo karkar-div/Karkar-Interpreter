@@ -187,7 +187,7 @@ class VirtualMachine{
 			throw("Unsuccessful Unknown exit");
 		}
 		~VirtualMachine(){
-			delete Stack;
-			delete Registers;
+			delete[] Stack;
+			delete[] Registers;
 		}
 };

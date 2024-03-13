@@ -239,6 +239,9 @@ int main(int argc,char* argv[]) {
 				fwrite(dependency, sizeof(Dependency), 1, file);
 				dependency->info();
 			}
+			int data_section_size = DataSectionSize+1;
+			fwrite(&data_section_size, sizeof(int), 1, file);
+			fwrite(DataSection, sizeof(char), DataSectionSize+2, file);
 			fclose(file);
 			printf("Binary data has been written to out.kk\n");
 			break;
