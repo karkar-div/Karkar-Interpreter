@@ -85,8 +85,7 @@ int Line_Index = 1;
 [ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظﻹإﻷأﻵآ_]+ {yylval.String  = strdup(yytext);return IDENTIFIER;}
 [a-zA-Z_1-9]+                                 {yylval.String  = strdup(yytext);return IDENTIFIER;}
 \"[^\"]*\"  {
-    char* str = strdup(yytext);
-    str++;
+    char* str = strdup(yytext+1);
     str[strlen(str) - 1] = '\0';
     yylval.String = str;
     return STRING;

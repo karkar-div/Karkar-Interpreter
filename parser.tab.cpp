@@ -1331,9 +1331,9 @@ yyreduce:
                                                                                                 {
 	Global_Dependencies->push_back(new Dependency((yyvsp[-4].String),(yyvsp[-6].String)));
 	Symbol_Tables->DependencySymbols->push_back(new DependencySymbol(Global_Dependencies->size()-1,(yyvsp[-2].String)));
-	free((yyvsp[-4].String)-1);
-	free((yyvsp[-6].String)-1);
-	free((yyvsp[-2].String)-1);
+	free((yyvsp[-4].String));
+	free((yyvsp[-6].String));
+	free((yyvsp[-2].String));
 	(yyval.Func_Pointer_list) = (yyvsp[0].Func_Pointer_list);
 }
 #line 1340 "parser.tab.cpp"

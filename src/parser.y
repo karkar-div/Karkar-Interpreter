@@ -102,9 +102,9 @@ FunctionsOpional: Function FunctionsOpional                                     
 |		 		  IMPORT STRING FROM STRING AS STRING LINE_END FunctionsOpional {
 	Global_Dependencies->push_back(new Dependency($4,$2));
 	Symbol_Tables->DependencySymbols->push_back(new DependencySymbol(Global_Dependencies->size()-1,$6));
-	free($4-1);
-	free($2-1);
-	free($6-1);
+	free($4);
+	free($2);
+	free($6);
 	$$ = $8;
 }
 |		          %empty                                                        { $$ = new std::list<Function*> ; }

@@ -162,6 +162,7 @@ int main(int argc,char* argv[]) {
 	Scopes = new ScopeStack();
 	Symbol_Tables = new SymbolTableStack();
 	Global_Dependencies = new std::list<Dependency*>;
+	DataSection = new char[10000];
 
 	yy_buffer_state* buffer_state;
     try{
@@ -252,7 +253,7 @@ int main(int argc,char* argv[]) {
 	for(std::list<Dependency*>::iterator it = Global_Dependencies->begin();it != Global_Dependencies->end();++it)
 		delete (*it);
 	delete Global_Dependencies;
-	
+	delete[] DataSection;
 
 
 	return 0;

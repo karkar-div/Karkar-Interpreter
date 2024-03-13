@@ -1209,8 +1209,7 @@ case 60:
 YY_RULE_SETUP
 #line 87 "src/lexer.l"
 {
-    char* str = strdup(yytext);
-    str++;
+    char* str = strdup(yytext+1);
     str[strlen(str) - 1] = '\0';
     yylval.String = str;
     return STRING;
@@ -1218,7 +1217,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 94 "src/lexer.l"
+#line 93 "src/lexer.l"
 {
     yylval.Integer = yytext[1];
     return NUM;
@@ -1226,20 +1225,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 100 "src/lexer.l"
+#line 99 "src/lexer.l"
 {}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 101 "src/lexer.l"
+#line 100 "src/lexer.l"
 {}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 103 "src/lexer.l"
+#line 102 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 1243 "lex.yy.c"
+#line 1242 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2244,6 +2243,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 103 "src/lexer.l"
+#line 102 "src/lexer.l"
 
 

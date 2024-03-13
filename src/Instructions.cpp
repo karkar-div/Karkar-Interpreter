@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 
 #define FIRST 0
 #define SECOND 1
@@ -40,6 +41,7 @@ enum InstructionType{
 
 enum RegisterType{
 	Null,
+	data,
 	SP, // stack pointer register
 	BP, // base pointer register
 	AX, // return value register
@@ -51,7 +53,7 @@ enum RegisterType{
 
 struct Parameter{
 	RegisterType Register;
-	int Offset;
+	int64_t Offset;
 	Parameter(RegisterType type,int offset){
 		Register = type;
 		Offset = offset;

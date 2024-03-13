@@ -4,6 +4,7 @@
 
 #include "Instructions.cpp"
 #include "Symbols&Types.cpp"
+#include "DataSections.cpp"
 
 class Expression{
 	protected:
@@ -195,6 +196,13 @@ class StringExpression : public Expression{
 		void info (int tabs) override {
 			for(int x = 0;x < tabs;x++)printf("    ");
 			printf("String Expression:%s\n",Value);
+		}
+		void GenerateByteCode (std::list<Instruction*>* instructions,int derefrence_num = 0) override {
+			strcpy(DataSection+DataSectionSize,Value);
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::data,0)));
+			instructions->push_back(new Instruction(InstructionType::Push,Parameter(RegisterType::Null,DataSectionSize)));
+			instructions->push_back(new Instruction(InstructionType::Add));
+			DataSectionSize += strlen(Value)+1;
 		}
 		~StringExpression() override {
 			free(Value);

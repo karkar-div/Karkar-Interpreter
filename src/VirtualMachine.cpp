@@ -6,6 +6,7 @@
 
 #include "Instructions.cpp"
 #include "Dependencies.cpp"
+#include "DataSections.cpp"
 
 class VirtualMachine{
 	private:
@@ -26,6 +27,8 @@ class VirtualMachine{
 					return (int64_t)StackPointer;
 				case BP:
 					return (int64_t)BasePointer;
+				case data:
+					return (int64_t)DataSection;
 				default:
 					return Registers[param->Register];
 			}
@@ -147,7 +150,7 @@ class VirtualMachine{
 						if(args_count <= 6){
 							int64_t args[6];
 							for(int i = 0; i < args_count; i++){
-								args[i] = *StackPointer;
+								args[args_count-i-1] = *StackPointer;
 								StackPointer++;
 							}
 							Registers[RegisterType::AX] = (*Dependencies)[parameter_value(&(instruction->Parameters[FIRST]))]->Run(args,args_count);
