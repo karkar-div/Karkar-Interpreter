@@ -14,20 +14,21 @@ int main(int argc,char* argv[]) {
 	bool info = false;
 	bool verbose = false;
 	
-	if(argc == 1){
-		printf("not enough arguments, please provide a file name .\n");
-		return 1;
+	switch(argc){
+		case 3:
+			if(!strcmp(info_option_str,"info"))
+				info = true;
+			if(!strcmp(info_option_str,"verbose-info")){
+				info = true;
+				verbose = true;
+			}
+		case 2:
+			break;
+		case 1:
+			printf("not enough arguments, please provide a file name .\n");
+			return -1;
 	}
-
-	if(argc >= 3){
-		if(!strcmp(info_option_str,"info")){
-			info = true;
-		}
-		if(!strcmp(info_option_str,"verbose-info")){
-			info = true;
-			verbose = true;
-		}
-	}
+    
     std::vector<Instruction*>* instructions = new std::vector<Instruction*>(0);
     std::vector<Dependency*>* dependencies = new std::vector<Dependency*>;
     DataSection = new char[100];

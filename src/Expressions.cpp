@@ -95,7 +95,7 @@ class UnaryExpression : public Expression{
 		enum Type{
 			BitwizeNot ,
 			Derefrence ,
-			Refrence ,
+			Refrence   ,
 			LogicalNot ,
 			Negativity ,
 		};

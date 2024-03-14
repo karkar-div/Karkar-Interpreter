@@ -125,24 +125,24 @@ int main(int argc,char* argv[]) {
 	bool verbose = false;
 	enum RunOptions run_options = RunOptions::Normal;
 	
-	if(argc == 1){
-		printf("not enough arguments, please provide a file name .\n");
-		return 1;
-	}
-
-	if(argc >= 3){
-		if(!strcmp(info_option_str,"info")){
-			info = true;
-		}
-		if(!strcmp(info_option_str,"verbose-info")){
-			info = true;
-			verbose = true;
-		}
-	}
-	if(argc >= 4){
-		if(!strcmp(running_option_str,"byte-code")){
-			run_options = RunOptions::ByteCode;
-		}
+	switch(argc){
+		case 4:
+			if(!strcmp(running_option_str,"byte-code"))
+				run_options = RunOptions::ByteCode;
+			if(!strcmp(running_option_str,"normal"))
+				run_options = RunOptions::ByteCode;
+		case 3:
+			if(!strcmp(info_option_str,"info"))
+				info = true;
+			if(!strcmp(info_option_str,"verbose-info")){
+				info = true;
+				verbose = true;
+			}
+		case 2:
+			break;
+		case 1:
+			printf("not enough arguments, please provide a file name .\n");
+			return -1;
 	}
 
 
